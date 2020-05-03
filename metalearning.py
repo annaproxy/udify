@@ -1,7 +1,4 @@
-"""
-Training script useful for debugging UDify and AllenNLP code
-"""
-
+#from learn2learn import 
 import os
 import copy
 import datetime
@@ -14,6 +11,7 @@ from allennlp.common.util import import_submodules
 from allennlp.commands.train import train_model
 
 from udify import util
+import learn2learn as metalearn 
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
                     level=logging.INFO)
@@ -32,6 +30,7 @@ parser.add_argument("--archive_bert", action="store_true", help="Archives the fi
 parser.add_argument("--predictor", default="udify_predictor", type=str, help="The type of predictor to use")
 
 args = parser.parse_args()
+
 
 log_dir_name = args.name
 if not log_dir_name:
@@ -63,37 +62,10 @@ if "vocabulary" in train_params:
 
 
 m = Model.load(train_params, "./pretrained",)
-print(m)
+#
+# print(m)
 
+meta_m = metalearn.algorithms.MAML(m, 1e-4, True)
 
-raise ValueError("Succesfully loaded model")
+raise ValueError("Succesfully loaded model and MAML")
 predict_params = train_params.duplicate()
-
-import_submodules("udify")
-
-
-try:
-    util.cache_vocab(train_params)
-    train_model(train_params, serialization_dir, recover=bool(args.resume))
-except KeyboardInterrupt:
-    logger.warning("KeyboardInterrupt, skipping training")
-
-dev_file = predict_params["validation_data_path"]
-test_file = predict_params["test_data_path"]
-
-dev_pred, dev_eval, test_pred, test_eval = [
-    os.path.join(serialization_dir, name)
-    for name in ["dev.conllu", "dev_results.json", "test.conllu", "test_results.json"]
-]
-
-if dev_file != test_file:
-    util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, dev_file, dev_pred, dev_eval)
-
-util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, test_file, test_pred, test_eval)
-
-if args.archive_bert:
-    bert_config = "config/archive/bert-base-multilingual-cased/bert_config.json"
-    util.archive_bert_model(serialization_dir, bert_config)
-
-util.cleanup_training(serialization_dir, keep_archive=not args.cleanup_archive)
-
