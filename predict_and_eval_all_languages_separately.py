@@ -32,4 +32,4 @@ for test_file in all_files:
         batch_size=16
     )
     print("Wrote", current_output_file)
-    raise ValueError("Something is working at least")
+   # raise ValueError("Something is working at least")
