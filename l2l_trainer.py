@@ -14,8 +14,6 @@ opt = optim.Adam(maml.parameters(), lr=4e-3)
 criterion = nn.CrossEntropyLoss()
 
 
-def 
-
 for iteration in range(num_iterations):
     learner = maml.clone()  # Creates a clone of model
     adaptation_task = task_generator.sample(shots=1)
