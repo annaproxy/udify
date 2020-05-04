@@ -57,17 +57,19 @@ else:
     configs.append(Params.from_file(os.path.join(serialization_dir, "config.json")))
 
 train_params = util.merge_configs(configs)
+predict_params = train_params.duplicate()
+
 if "vocabulary" in train_params:
     # Remove this key to make AllenNLP happy
     train_params["vocabulary"].pop("non_padded_namespaces", None)
 
-
+"""
 m = Model.load(train_params, "./pretrained",)
 print(m)
 
 
 raise ValueError("Succesfully loaded model")
-predict_params = train_params.duplicate()
+
 
 import_submodules("udify")
 
@@ -77,23 +79,29 @@ try:
     train_model(train_params, serialization_dir, recover=bool(args.resume))
 except KeyboardInterrupt:
     logger.warning("KeyboardInterrupt, skipping training")
+"""
+print("Setting test files")
+#dev_file = predict_params["validation_data_path"]
+#test_file = predict_params["test_data_path"]
+test_file = "data/ud/multilingual/test.conllu"
+test_pred = "testpred.conllu"
+test_eval = "testEVAL.json"
+#dev_pred, dev_eval, test_pred, test_eval = [
+#    os.path.join(serialization_dir, name)n_ewt-ud-t
+#    for name in ["dev.conllu", "dev_results.json", "test.conllu", "test_results.json"]
+#]
+serialization_dir = "./pretrained"
 
-dev_file = predict_params["validation_data_path"]
-test_file = predict_params["test_data_path"]
-
-dev_pred, dev_eval, test_pred, test_eval = [
-    os.path.join(serialization_dir, name)
-    for name in ["dev.conllu", "dev_results.json", "test.conllu", "test_results.json"]
-]
-
-if dev_file != test_file:
-    util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, dev_file, dev_pred, dev_eval)
+#if dev_file != test_file:
+#    util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, dev_file, dev_pred, dev_eval)
 
 util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, test_file, test_pred, test_eval)
+print("Predictions done")
 
+"""
 if args.archive_bert:
     bert_config = "config/archive/bert-base-multilingual-cased/bert_config.json"
     util.archive_bert_model(serialization_dir, bert_config)
 
 util.cleanup_training(serialization_dir, keep_archive=not args.cleanup_archive)
-
+"""
