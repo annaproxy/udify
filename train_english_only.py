@@ -8,8 +8,8 @@ import datetime
 import logging
 import argparse
 import sys
-print(sys.getdefaultencoding())
-raise ValueError("j")
+#print(sys.getdefaultencoding())
+#raise ValueError("j")
 from allennlp.common import Params
 from allennlp.models.model import Model
 from allennlp.common.util import import_submodules
