@@ -1,21 +1,14 @@
-"""
-Training script useful for debugging UDify and AllenNLP code
-"""
-
-import os
-import copy
-import datetime
-import logging
-import argparse
-import sys
-#print(sys.getdefaultencoding())
-#raise ValueError("j")
-from allennlp.common import Params
-from allennlp.models.model import Model
-from allennlp.common.util import import_submodules
-from allennlp.commands.train import train_model
-
+from allennlp.common.params import Params
+from allennlp.common.util import lazy_groups_of
+from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
+import os 
+import datetime 
+import argparse
+from allennlp.common import Params
+from udify import util
+import logging
+
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
                     level=logging.INFO)
@@ -58,61 +51,23 @@ else:
     serialization_dir = args.resume
     configs.append(Params.from_file(os.path.join(serialization_dir, "config.json")))
 
-train_params = util.merge_configs(configs)
-predict_params = train_params.duplicate()
+params = util.merge_configs(configs)
 
-if "vocabulary" in train_params:
-    # Remove this key to make AllenNLP happy
-    train_params["vocabulary"].pop("non_padded_namespaces", None)
+parameter_filename = "./config/ud/en/udify_bert_finetune_en_ewt.json"
+#serialization_dir = "./"
+# missing overrides arg
+#params = Params.from_file(parameter_filename, "")
+#params, serialization_dir = get_params()
 
-import_submodules("udify")
+# Special logic to instantiate backward-compatible trainer.
+pieces = TrainerPieces.from_params(params,  # pylint: disable=no-member
+                                serialization_dir,
+                                recover=False,
+                                cache_directory=None,
+                                cache_prefix=None)
 
+raw_train_generator = pieces.iterator(pieces.train_dataset,
+                                            num_epochs=1,
+                                            shuffle=False)
 
-try:
-    util.cache_vocab(train_params)
-    train_model(train_params, serialization_dir, recover=bool(args.resume))
-except KeyboardInterrupt:
-    logger.warning("KeyboardInterrupt, skipping training")
-    
-"""
-m = Model.load(train_params, "./pretrained",)
-print(m)
-
-
-raise ValueError("Succesfully loaded model")
-
-
-import_submodules("udify")
-
-
-try:
-    util.cache_vocab(train_params)
-    train_model(train_params, serialization_dir, recover=bool(args.resume))
-except KeyboardInterrupt:
-    logger.warning("KeyboardInterrupt, skipping training")
-"""
-print("Setting test files")
-#dev_file = predict_params["validation_data_path"]
-#test_file = predict_params["test_data_path"]
-test_file = "data/ud/multilingual/test.conllu"
-test_pred = "testpred.conllu"
-test_eval = "testEVAL.json"
-#dev_pred, dev_eval, test_pred, test_eval = [
-#    os.path.join(serialization_dir, name)n_ewt-ud-t
-#    for name in ["dev.conllu", "dev_results.json", "test.conllu", "test_results.json"]
-#]
-serialization_dir = "./pretrained"
-
-#if dev_file != test_file:
-#    util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, dev_file, dev_pred, dev_eval)
-
-util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, test_file, test_pred, test_eval)
-print("Predictions done")
-
-"""
-if args.archive_bert:
-    bert_config = "config/archive/bert-base-multilingual-cased/bert_config.json"
-    util.archive_bert_model(serialization_dir, bert_config)
-
-util.cleanup_training(serialization_dir, keep_archive=not args.cleanup_archive)
-"""
+train_generator = lazy_groups_of(raw_train_generator, 0)

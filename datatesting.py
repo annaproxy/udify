@@ -24,11 +24,13 @@ v = Vocabulary.from_instances(dev_dataset)
 test = dev_dataset[0]
 for x in test:
     test[x].index(v)
-test = test.as_tensor_dict()
+test = test.as_tensor_dict()['tokens']
+test["tokens"] = test["tokens"].unsqueeze(0)
+#print(test.shape)
 train_params = get_params()
 m = UdifyModel.load(train_params, "./pretrained",)
 print("laden gelukt")
-result = m.forward(test)
+result = m(test)
 print(result)
 raise ValueError("jjj")
 print(type(dev_dataset), type(dev_dataset[0]))
