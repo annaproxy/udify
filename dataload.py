@@ -2,13 +2,14 @@ from allennlp.common.params import Params
 from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
+from udify.models.udify_model import UdifyModel
 import os 
 import datetime 
 import argparse
 from allennlp.common import Params
 from udify import util
 import logging
-
+from allennlp.nn import util as nn_util
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
                     level=logging.INFO)
@@ -49,7 +50,7 @@ if not args.resume:
     configs.append(Params.from_file(args.base_config))
 else:
     serialization_dir = args.resume
-    configs.append(Params.from_file(os.path.join(serialization_dir, "config.json")))
+    configs.append(Params.from_file(os.path.join(sraw_train_generatorerialization_dir, "config.json")))
 
 params = util.merge_configs(configs)
 
@@ -58,6 +59,9 @@ parameter_filename = "./config/ud/en/udify_bert_finetune_en_ewt.json"
 # missing overrides arg
 #params = Params.from_file(parameter_filename, "")
 #params, serialization_dir = get_params()
+if "vocabulary" in params:
+    # Remove this key to make AllenNLP happy
+    params["vocabulary"].pop("non_padded_namespaces", None)
 
 # Special logic to instantiate backward-compatible trainer.
 pieces = TrainerPieces.from_params(params,  # pylint: disable=no-member
@@ -70,4 +74,14 @@ raw_train_generator = pieces.iterator(pieces.train_dataset,
                                             num_epochs=1,
                                             shuffle=False)
 
-train_generator = lazy_groups_of(raw_train_generator, 0)
+train_generator = lazy_groups_of(raw_train_generator, 1)
+
+test = next(train_generator)
+print(type(test))
+from i_hate_params_i_want_them_all_in_one_file import get_params
+train_params = get_params()
+m = UdifyModel.load(train_params, "./pretrained",)
+#test = nn_util.move_to_device(test, self._cuda_devices[0])
+print(type(test), test)
+outputs = m.forward(**test[0])
+print(type(outputs))
