@@ -41,7 +41,6 @@ class UdifyModel(Model):
                  layer_dropout: int = 0.0,
                  initializer: InitializerApplicator = InitializerApplicator(),
                  regularizer: Optional[RegularizerApplicator] = None) -> None:
-        print("===============INITIALIZING UDIFY")
         super(UdifyModel, self).__init__(vocab, regularizer)
 
         self.tasks = sorted(tasks)
