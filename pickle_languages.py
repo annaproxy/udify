@@ -7,14 +7,14 @@ import learn2learn as metalearn
 from torch.optim import Adam
 
 generator1 = get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud')
-generator2 = get_language_dataset('UD_Korean-Kaist','ko_kaist-ud')
+generator2 = get_language_dataset('UD_Japanese-GSD','ja_gsd-ud')
 print("All Data Loaded")
 
 train_params = get_params()
 m = Model.load(train_params, "./pretrained",)
 meta_m = metalearn.algorithms.MAML(m, 1e-4, True)
 # TODO BERT params different update
-optimizer=  Adam(meta_m.parameters(), 1e-3, betas=(0.9,0.99),weight_decay=0.01) 
+optimizer =  Adam(meta_m.parameters(), 1e-3, betas=(0.9,0.99),weight_decay=0.01) 
 tasks = [generator1, generator2]
 print("Model ready")
 
@@ -23,12 +23,15 @@ for iteration in range(10):
     for task_generator in tasks:
         print("Starting task")
         learner = meta_m.clone()
+        print("cloned")
         support_set = next(task_generator)[0]
         query_set = next(task_generator)[0]
-
+        print("support and query set")
         train_loss = learner.forward(**support_set)['loss']
+        print("one forward loss: ", train_loss)
+        raise ValueError()
         learner.adapt(train_loss)
-
+        print("learner adapted")
         eval_loss = learner.forward(**query_set)['loss']
         iteration_loss += eval_loss
         print("Finished task")
