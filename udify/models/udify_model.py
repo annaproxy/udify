@@ -5,7 +5,7 @@ The base UDify model for training and prediction
 from typing import Optional, Any, Dict, List, Tuple
 from overrides import overrides
 import logging
-
+import allennlp
 import torch
 
 from pytorch_pretrained_bert.tokenization import BertTokenizer
@@ -20,7 +20,6 @@ from allennlp.nn.util import get_text_field_mask
 from udify.modules.scalar_mix import ScalarMixWithDropout
 
 logger = logging.getLogger(__name__)
-
 
 @Model.register("udify_model")
 class UdifyModel(Model):
@@ -42,6 +41,7 @@ class UdifyModel(Model):
                  layer_dropout: int = 0.0,
                  initializer: InitializerApplicator = InitializerApplicator(),
                  regularizer: Optional[RegularizerApplicator] = None) -> None:
+        print("===============INITIALIZING UDIFY")
         super(UdifyModel, self).__init__(vocab, regularizer)
 
         self.tasks = sorted(tasks)
@@ -81,15 +81,17 @@ class UdifyModel(Model):
                 tokens: Dict[str, torch.LongTensor],
                 metadata: List[Dict[str, Any]] = None,
                 **kwargs: Dict[str, torch.LongTensor]) -> Dict[str, torch.Tensor]:
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAAA IS THIS CALLED ")
         if "track_epoch" in kwargs:
             track_epoch = kwargs.pop("track_epoch")
 
         gold_tags = kwargs
-
+        
         if "tokens" in self.tasks:
             # Model is predicting tokens, so add them to the gold tags
             gold_tags["tokens"] = tokens["tokens"]
 
+        #print("Input for gettetfieldmask", type(tokens['tokens']))
         mask = get_text_field_mask(tokens)
         self._apply_token_dropout(tokens)
 

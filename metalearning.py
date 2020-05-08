@@ -17,7 +17,9 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 train_params = get_params()
-m = Model.load(train_params, "./pretrained",)
+
+
+#m = Model.load(train_params, "./pretrained",)
 #
 # print(m)
 

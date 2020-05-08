@@ -28,7 +28,9 @@ parser.add_argument("--archive_bert", action="store_true", help="Archives the fi
 parser.add_argument("--predictor", default="udify_predictor", type=str, help="The type of predictor to use")
 
 args = parser.parse_args()
+#print(type(args))
 
+#raise ValueError()
 log_dir_name = args.name
 if not log_dir_name:
     file_name = args.config[0] if args.config else args.base_config
@@ -50,7 +52,7 @@ if not args.resume:
     configs.append(Params.from_file(args.base_config))
 else:
     serialization_dir = args.resume
-    configs.append(Params.from_file(os.path.join(sraw_train_generatorerialization_dir, "config.json")))
+    configs.append(Params.from_file(os.path.join(serialization_dir, "config.json")))
 
 params = util.merge_configs(configs)
 
@@ -76,12 +78,15 @@ raw_train_generator = pieces.iterator(pieces.train_dataset,
 
 train_generator = lazy_groups_of(raw_train_generator, 1)
 
-test = next(train_generator)
+test = next(train_generator)[0]
+print(test)
+raise ValueError()
 print(type(test))
 from i_hate_params_i_want_them_all_in_one_file import get_params
 train_params = get_params()
-m = UdifyModel.load(train_params, "./pretrained",)
+#m = UdifyModel.load(train_params, "./pretrained",)
 #test = nn_util.move_to_device(test, self._cuda_devices[0])
 print(type(test), test)
 outputs = m.forward(**test[0])
+print(outputs['loss'])
 print(type(outputs))

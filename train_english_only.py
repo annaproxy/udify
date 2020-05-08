@@ -22,9 +22,9 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
 logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--name", default="english_only", type=str, help="Log dir name")
+parser.add_argument("--name", default="french_only", type=str, help="Log dir name")
 parser.add_argument("--base_config", default="config/udify_base.json", type=str, help="Base configuration file")
-parser.add_argument("--config", default="config/ud/en/udify_bert_finetune_en_ewt.json", type=str, nargs="+", help="Overriding configuration files")
+parser.add_argument("--config", default="config/ud/fr/udify_bert_finetune_fr.json", type=str, nargs="+", help="Overriding configuration files")
 parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
 parser.add_argument("--resume", type=str, help="Resume training with the given model")
 parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
@@ -32,7 +32,7 @@ parser.add_argument("--cleanup_archive", action="store_true", help="Delete the m
 parser.add_argument("--replace_vocab", action="store_true", help="Create a new vocab and replace the cached one")
 parser.add_argument("--archive_bert", action="store_true", help="Archives the finetuned BERT model after training")
 parser.add_argument("--predictor", default="udify_predictor", type=str, help="The type of predictor to use")
-
+raise ValueError("You are about to pretrain on French!")
 args = parser.parse_args()
 
 log_dir_name = args.name
@@ -51,7 +51,7 @@ if not args.resume:
     if args.lazy is not None:
         overrides["dataset_reader"] = {"lazy": args.lazy}
     configs.append(Params(overrides))
-    #for config_file in args.config:
+    #configs.append(Params({'config':}))
     configs.append(Params.from_file(args.config))
     configs.append(Params.from_file(args.base_config))
 else:
