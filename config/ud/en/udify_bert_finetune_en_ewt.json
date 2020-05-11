@@ -84,7 +84,7 @@
   },
   "trainer": {
     "num_epochs": 80,
-    "patience": 80,
+    "patience": 40,
     "num_serialized_models_to_keep": 1,
     "should_log_learning_rate": true,
     "summary_interval": 100,
