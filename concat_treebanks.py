@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("output_dir", type=str, help="The path to output the concatenated files")
+parser.add_argument("--output_dir", type=str, help="The path to output the concatenated files")
 parser.add_argument("--dataset_dir", default="data/expmix", type=str,
                     help="The path containing all UD treebanks")
 parser.add_argument("--treebanks", default=[], type=str, nargs="+",
@@ -31,7 +31,7 @@ for treebank, name in zip([train, dev, test], ["train.conllu", "dev.conllu", "te
     if not os.path.exists(filename):
         print("Warning: Not found", filename)
         continue
-    with open( filename, 'w') as write:
+    with open( filename, 'w', encoding='utf-8') as write:
         for t in treebank:
             if not t:
                 continue

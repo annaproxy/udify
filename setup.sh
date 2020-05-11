@@ -13,9 +13,13 @@ module load NCCL/2.5.6-CUDA-10.1.243
 
 echo "starting now"
 
+# Evaluating languages
 #python3 predict_and_eval_all_languages_separately.py
-pip3 install --user --no-cache-dir -r ./requirements.txt
+
+# Installing requirements
+#pip3 install --user --no-cache-dir -r ./requirements.txt
 #bash ./scripts/download_ud_data.sh
 
-
+# Concat treebanks
+python3 concat_treebanks.py --output_dir "expmixvocab"
 echo "doneme up"
