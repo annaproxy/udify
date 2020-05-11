@@ -27,11 +27,7 @@ treebanks = util.get_ud_treebank_files(args.dataset_dir, args.treebanks)
 train, dev, test = list(zip(*[treebanks[k] for k in treebanks]))
 
 for treebank, name in zip([train, dev, test], ["train.conllu", "dev.conllu", "test.conllu"]):
-    filename = os.path.join(args.output_dir, name)
-    if not os.path.exists(filename):
-        print("Warning: Not found", filename)
-        continue
-    with open( filename, 'w', encoding='utf-8') as write:
+    with open( os.path.join(args.output_dir, name), 'w', encoding='utf-8') as write:
         for t in treebank:
             if not t:
                 continue
