@@ -23,7 +23,7 @@ echo "starting now"
 # Concat treebanks and build vocabulary
 #python3 concat_treebanks.py --output_dir "expmixvocab"
 # python3 train.py --name "english_only_expmix" 
-
+python3 gputest.py >> gputestout
 # Train english only with right params
 python3 train_english_only.py
 
