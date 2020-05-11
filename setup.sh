@@ -17,14 +17,16 @@ echo "starting now"
 #python3 predict_and_eval_all_languages_separately.py
 
 # Installing requirements
+#pip3 install --user --no-cache-dir torch torchvision
 #pip3 install --user --no-cache-dir -r ./requirements.txt
 #bash ./scripts/download_ud_data.sh
 
 # Concat treebanks and build vocabulary
 #python3 concat_treebanks.py --output_dir "expmixvocab"
 # python3 train.py --name "english_only_expmix" 
-python3 gputest.py >> gputestout
+nvidia-smi
+#python3 gputest.py >> gputestout
 # Train english only with right params
-python3 train_english_only.py
+#python3 train_english_only.py
 
 echo "doneme up"
