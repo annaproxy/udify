@@ -1,4 +1,4 @@
-allennlp==1.0.0rc3
+allennlp==0.9
 tensorflow
 pandas
 jupyter
