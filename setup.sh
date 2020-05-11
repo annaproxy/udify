@@ -21,5 +21,6 @@ echo "starting now"
 #bash ./scripts/download_ud_data.sh
 
 # Concat treebanks
-python3 concat_treebanks.py --output_dir "expmixvocab"
+#python3 concat_treebanks.py --output_dir "expmixvocab"
+python3 train.py --name english_only_expmix
 echo "doneme up"
