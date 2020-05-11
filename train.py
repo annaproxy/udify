@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 parser = argparse.ArgumentParser()
 parser.add_argument("--name", default="", type=str, help="Log dir name")
 parser.add_argument("--base_config", default="config/udify_base.json", type=str, help="Base configuration file")
-parser.add_argument("--config", default=[], type=str, nargs="+", help="Overriding configuration files")
+parser.add_argument("--config", default="config/ud/multilingual/udify_bert_finetune_multilingual.json", type=str, nargs="+", help="Overriding configuration files")
 parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
 parser.add_argument("--resume", type=str, help="Resume training with the given model")
 parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
@@ -66,6 +66,7 @@ import_submodules("udify")
 
 try:
     util.cache_vocab(train_params)
+    raise ValueError("DONE!!!!")
     train_model(train_params, serialization_dir, recover=bool(args.resume))
 except KeyboardInterrupt:
     logger.warning("KeyboardInterrupt, skipping training")

@@ -31,5 +31,5 @@ for treebank, name in zip([train, dev, test], ["train.conllu", "dev.conllu", "te
         for t in treebank:
             if not t:
                 continue
-            with open(t, 'r') as read:
+            with open(t, 'r', encoding='utf-8') as read:
                 shutil.copyfileobj(read, write)
