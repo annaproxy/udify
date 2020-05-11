@@ -68,6 +68,7 @@ import_submodules("udify")
 
 
 try: 
+    # Vocabulary should be there already!
     #util.cache_vocab(train_params)
     train_model(train_params, serialization_dir, recover=bool(args.resume))
 except KeyboardInterrupt:

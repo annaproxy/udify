@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=install_wiwd
-#SBATCH -t 1:40:00
+#SBATCH --job-name=train_en
+#SBATCH -t 8:40:00
 #SBATCH -N 1
 #SBATCH --partition=gpu_shared_course
 
@@ -20,7 +20,11 @@ echo "starting now"
 #pip3 install --user --no-cache-dir -r ./requirements.txt
 #bash ./scripts/download_ud_data.sh
 
-# Concat treebanks
+# Concat treebanks and build vocabulary
 #python3 concat_treebanks.py --output_dir "expmixvocab"
-python3 train.py --name "english_only_expmix"
+# python3 train.py --name "english_only_expmix" 
+
+# Train english only with right params
+python3 train_english_only.py
+
 echo "doneme up"
