@@ -22,5 +22,5 @@ echo "starting now"
 
 # Concat treebanks
 #python3 concat_treebanks.py --output_dir "expmixvocab"
-python3 train.py --name english_only_expmix
+python3 train.py --name "english_only_expmix"
 echo "doneme up"
