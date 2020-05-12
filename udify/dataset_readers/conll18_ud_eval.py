@@ -125,10 +125,10 @@ class UDError(Exception):
 
 # Conversion methods handling `str` <-> `unicode` conversions in Python2
 def _decode(text):
-    return text.decode("utf-8") #text if sys.version_info[0] >= 3 or not isinstance(text, str) else text.decode("utf-8")
+    return text if sys.version_info[0] >= 3 or not isinstance(text, str) else text.decode("utf-8")
 
 def _encode(text):
-    return text.encode("utf-8") #text if sys.version_info[0] >= 3 or not isinstance(text, unicode) else text.encode("utf-8")
+    return text if sys.version_info[0] >= 3 or not isinstance(text, unicode) else text.encode("utf-8")
 
 # Load given CoNLL-U file into internal representation
 def load_conllu(file):
@@ -486,7 +486,7 @@ def load_conllu_file(path):
     #if 'predict' not in path:
     #    _file = open(path, mode="r")
     #else:
-    _file = open(path, mode="r", encoding='utf-8' )
+    _file = open(path, mode="r", encoding='utf-8')
     return load_conllu(_file)
 
 def evaluate_wrapper(args):
