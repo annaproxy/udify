@@ -29,7 +29,7 @@ parser.add_argument("--device", default=None, type=int, help="CUDA device; set t
 parser.add_argument("--resume", type=str, help="Resume training with the given model")
 parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
 parser.add_argument("--cleanup_archive", action="store_true", help="Delete the model archive")
-parser.add_argument("--replace_vocab", action="store_true", help="Create a new vocab and replace the cached one")
+#parser.add_argument("--replace_vocab", action="store_true", help="Create a new vocab and replace the cached one")
 parser.add_argument("--archive_bert", action="store_true", help="Archives the finetuned BERT model after training")
 parser.add_argument("--predictor", default="udify_predictor", type=str, help="The type of predictor to use")
 args = parser.parse_args()
