@@ -1,6 +1,7 @@
 """
 A collection of handy utilities
 """
+from __future__ import unicode_literals
 
 from typing import List, Tuple, Dict, Any
 
