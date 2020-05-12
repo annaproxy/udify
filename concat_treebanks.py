@@ -6,6 +6,7 @@ import os
 import shutil
 import logging
 import argparse
+from __future__ import unicode_literals
 
 from udify import util
 
@@ -32,4 +33,5 @@ for treebank, name in zip([train, dev, test], ["train.conllu", "dev.conllu", "te
             if not t:
                 continue
             with open(t, 'r', encoding='utf-8') as read:
-                shutil.copyfileobj(read, write)
+                shutil.copyfileobj(unicode(read), write)
+            raise ValueError("Temp done")
