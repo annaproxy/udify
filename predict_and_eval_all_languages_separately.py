@@ -21,6 +21,7 @@ for test_file in all_files:
     language_name = test_file.split('/')[2] + '_predicted.conllu'
     performance_name = test_file.split('/')[2] + '_results.json'
     
+<<<<<<< HEAD
     #current_pred_file = os.path.join('predictions',language_name)
     #current_output_file = os.path.join('performance', performance_name)
 
@@ -28,6 +29,15 @@ for test_file in all_files:
     #evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
     #util.save_metrics(evaluation, current_output_file)
     #continue
+=======
+    current_pred_file = os.path.join('predictions',language_name)
+    current_output_file = os.path.join('performance', performance_name)
+
+
+    evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
+    util.save_metrics(evaluation, current_output_file)
+    continue
+>>>>>>> 28ca6fec3a82cc75d757831e09956e099917795f
     #raise ValueError("Check your output")
     
     current_pred_file = os.path.join('predictions',language_name)
