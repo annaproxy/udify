@@ -1,12 +1,11 @@
 """
 Concatenates all treebanks together
 """
-
+from __future__ import unicode_literals
 import os
 import shutil
 import logging
 import argparse
-from __future__ import unicode_literals
 
 from udify import util
 

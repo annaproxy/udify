@@ -1,6 +1,7 @@
 """
 Training script useful for debugging UDify and AllenNLP code
 """
+from __future__ import unicode_literals
 
 import os
 import copy
