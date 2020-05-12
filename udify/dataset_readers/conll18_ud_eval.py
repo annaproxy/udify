@@ -478,7 +478,7 @@ def evaluate(gold_ud, system_ud):
 
 
 def load_conllu_file(path):
-    _file = open(path, mode="r", **({"encoding": "utf-8"} if sys.version_info >= (3, 0) else {}))
+    _file = open(path, mode="r", encoding='utf-8')
     return load_conllu(_file)
 
 def evaluate_wrapper(args):
