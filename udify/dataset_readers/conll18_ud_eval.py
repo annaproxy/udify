@@ -478,7 +478,15 @@ def evaluate(gold_ud, system_ud):
 
 
 def load_conllu_file(path):
-    _file = open(path, mode="r", **({"encoding": "utf-8"} if sys.version_info >= (3, 0) else {}))
+    """
+    Insanity for Lisa. Does not work
+    Justification: gold standard file cannot be read with utf-8 somehow on lisa. 
+    On any updated version it will be read with utf-8 automatically 
+    """
+    #if 'predict' not in path:
+    #    _file = open(path, mode="r")
+    #else:
+    _file = open(path, mode="r", encoding='utf-8')
     return load_conllu(_file)
 
 def evaluate_wrapper(args):

@@ -166,6 +166,7 @@ def predict_and_evaluate_model_with_archive(predictor: str, params: Params, arch
         evaluation = evaluate(load_conllu_file(gold_file), load_conllu_file(pred_file))
         save_metrics(evaluation, output_file)
     except UDError:
+        raise ValueError("Just fucking kill me already")
         logger.warning(f"Failed to evaluate {pred_file}")
         traceback.print_exc()
 

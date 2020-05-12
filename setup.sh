@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=train_en
+#SBATCH --job-name=eval_en
 #SBATCH -t 8:40:00
 #SBATCH -N 1
 #SBATCH --partition=gpu_shared_course
@@ -22,11 +22,16 @@ echo "starting now"
 #bash ./scripts/download_ud_data.sh
 
 # Concat treebanks and build vocabulary
-#python3 concat_treebanks.py --output_dir "expmixvocab"
-# python3 train.py --name "english_only_expmix" 
-nvidia-smi
+#python3 concat_treebanks.py --output_dir "expmixvocab2"
+python3.7 train.py --name "english_only_expmix2" 
+
+# Do some DESPERATE gpu testing, you need torch==1.4.0
+#nvidia-smi
 #python3 gputest.py >> gputestout
+##pip3 install --user torch==1.4.0 
 # Train english only with right params
 #python3 train_english_only.py
+
+#python3 predict_and_eval_all_languages_separately.py
 
 echo "doneme up"
