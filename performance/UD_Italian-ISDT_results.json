@@ -1,0 +1,132 @@
+{
+    "Tokens": {
+        "correct": 9680,
+        "gold_total": 9680,
+        "system_total": 9680,
+        "aligned_total": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "aligned_accuracy": null
+    },
+    "Sentences": {
+        "correct": 482,
+        "gold_total": 482,
+        "system_total": 482,
+        "aligned_total": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "aligned_accuracy": null
+    },
+    "Words": {
+        "correct": 10417,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "aligned_accuracy": null
+    },
+    "UPOS": {
+        "correct": 9563,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.918018623404051,
+        "recall": 0.918018623404051,
+        "f1": 0.918018623404051,
+        "aligned_accuracy": 0.918018623404051
+    },
+    "XPOS": {
+        "correct": 0,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "aligned_accuracy": 0.0
+    },
+    "UFeats": {
+        "correct": 4220,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.4051070365748296,
+        "recall": 0.4051070365748296,
+        "f1": 0.4051070365748296,
+        "aligned_accuracy": 0.4051070365748296
+    },
+    "AllTags": {
+        "correct": 0,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "aligned_accuracy": 0.0
+    },
+    "Lemmas": {
+        "correct": 6888,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.6612268407410963,
+        "recall": 0.6612268407410963,
+        "f1": 0.6612268407410963,
+        "aligned_accuracy": 0.6612268407410963
+    },
+    "UAS": {
+        "correct": 8942,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.8584045310550062,
+        "recall": 0.8584045310550062,
+        "f1": 0.8584045310550062,
+        "aligned_accuracy": 0.8584045310550062
+    },
+    "LAS": {
+        "correct": 8359,
+        "gold_total": 10417,
+        "system_total": 10417,
+        "aligned_total": 10417,
+        "precision": 0.8024383219736968,
+        "recall": 0.8024383219736968,
+        "f1": 0.8024383219736968,
+        "aligned_accuracy": 0.8024383219736968
+    },
+    "CLAS": {
+        "correct": 3825,
+        "gold_total": 5131,
+        "system_total": 5217,
+        "aligned_total": 5131,
+        "precision": 0.7331799884991375,
+        "recall": 0.7454687195478464,
+        "f1": 0.7392732895245459,
+        "aligned_accuracy": 0.7454687195478464
+    },
+    "MLAS": {
+        "correct": 494,
+        "gold_total": 5131,
+        "system_total": 5217,
+        "aligned_total": 5131,
+        "precision": 0.09469043511596703,
+        "recall": 0.09627752874683297,
+        "f1": 0.09547738693467336,
+        "aligned_accuracy": 0.09627752874683297
+    },
+    "BLEX": {
+        "correct": 2341,
+        "gold_total": 5131,
+        "system_total": 5217,
+        "aligned_total": 5131,
+        "precision": 0.4487253210657466,
+        "recall": 0.45624634574157086,
+        "f1": 0.4524545805952841,
+        "aligned_accuracy": 0.45624634574157086
+    }
+}

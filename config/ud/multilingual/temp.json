@@ -14,9 +14,9 @@
         }
       }
     },
-    "train_data_path": " data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-train.conllu",
-    "validation_data_path": " data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-dev.conllu",
-    "test_data_path": " data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-test.conllu",
+    "train_data_path": "data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-dev.conllu",
+    "validation_data_path": "data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-dev.conllu",
+    "test_data_path": "data/expmix/UD_Russian-SynTagRus/ru_syntagrus-ud-test.conllu",
     "vocabulary": {
       "directory_path": "data/vocab/english_only_expmix3/vocabulary"
     },
