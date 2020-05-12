@@ -8,7 +8,7 @@ from udify import util
 def get_params():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="english_only", type=str, help="Log dir name")
+    parser.add_argument("--name", default="english_only_expmix", type=str, help="Log dir name")
     parser.add_argument("--base_config", default="config/udify_base.json", type=str, help="Base configuration file")
     parser.add_argument("--config", default="config/ud/en/udify_bert_finetune_en_ewt.json", type=str, nargs="+", help="Overriding configuration files")
     parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")

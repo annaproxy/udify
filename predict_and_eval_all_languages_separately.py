@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 all_files = list()
-with open("all_test_files.txt", "r") as f:
+with open("all_expmix_test.txt", "r") as f:
     for line in f:
         all_files.append(line.strip())
 
@@ -25,7 +25,7 @@ for test_file in all_files:
     util.predict_and_evaluate_model(
         "udify_predictor",
         get_params(),
-        "pretrained",
+        "pretrained_expmix",
         current_gold_file,
         current_pred_file,
         current_output_file,
