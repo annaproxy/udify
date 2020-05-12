@@ -27,7 +27,8 @@ for test_file in all_files:
 
     evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
     util.save_metrics(evaluation, current_output_file)
-    raise ValueError("Check your output")
+    continue
+    #raise ValueError("Check your output")
     
     current_pred_file = os.path.join('predictions',language_name)
     current_output_file = os.path.join('performance', performance_name)
