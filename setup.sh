@@ -23,7 +23,7 @@ echo "starting now"
 
 # Concat treebanks and build vocabulary
 #python3 concat_treebanks.py --output_dir "expmixvocab2"
-python3.7 train.py --name "english_only_expmix3" 
+python3.7 train.py --name "english_only_expmix4" 
 
 # Do some DESPERATE gpu testing, you need torch==1.4.0
 #nvidia-smi
