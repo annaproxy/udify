@@ -32,8 +32,8 @@ for test_file in all_files:
     current_output_file = os.path.join('performance', performance_name)
 
 
-    evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
-    util.save_metrics(evaluation, current_output_file)
+    #evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
+    #util.save_metrics(evaluation, current_output_file)
     #continue
     #raise ValueError("Check your output")
     
@@ -43,7 +43,7 @@ for test_file in all_files:
     util.predict_and_evaluate_model(
         "udify_predictor",
         get_params(),
-        "verytemp",
+        "logs/english_only_expmix4/2020.05.13_01.43.52",
         current_gold_file,
         current_pred_file,
         current_output_file,
