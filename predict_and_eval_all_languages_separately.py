@@ -34,16 +34,16 @@ for test_file in all_files:
 
     evaluation = evaluate(load_conllu_file(current_gold_file), load_conllu_file(current_pred_file))
     util.save_metrics(evaluation, current_output_file)
-    continue
+    #continue
     #raise ValueError("Check your output")
     
-    current_pred_file = os.path.join('predictions',language_name)
-    current_output_file = os.path.join('performance', performance_name)
+    #current_pred_file = os.path.join('predictions',language_name)
+    #current_output_file = os.path.join('performance', performance_name)
 
     util.predict_and_evaluate_model(
         "udify_predictor",
         get_params(),
-        "pretrained_expmix",
+        "verytemp",
         current_gold_file,
         current_pred_file,
         current_output_file,
