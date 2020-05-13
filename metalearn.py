@@ -3,7 +3,6 @@
 from get_language_dataset import get_language_dataset
 from i_hate_params_i_want_them_all_in_one_file import get_params
 from allennlp.models.model import Model
-import learn2learn as metalearn
 from learn2learn.algorithms import MAML
 
 from torch.optim import Adam
