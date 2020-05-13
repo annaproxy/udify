@@ -4,9 +4,11 @@ from get_language_dataset import get_language_dataset
 from i_hate_params_i_want_them_all_in_one_file import get_params
 from allennlp.models.model import Model
 import learn2learn as metalearn
+from learn2learn.algorithms import MAML
+
 from torch.optim import Adam
 from torch import autograd
-
+#raise ValueError("Done")
 # Tran&Bisazza: Italian, Norwegian, 
 # Czech, Russian, Hindi, Korean, Arabic
 
@@ -23,7 +25,7 @@ print("All Data Loaded")
 
 train_params = get_params()
 m = Model.load(train_params, "logs/english_only_expmix4/2020.05.13_01.43.52",)
-meta_m = metalearn.algorithms.MAML(m, 1e-4, True)
+meta_m = MAML(m, 1e-4, True)
 
 # TODO BERT params different update?
 optimizer =  Adam(meta_m.parameters(), 1e-4)
