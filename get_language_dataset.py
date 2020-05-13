@@ -26,7 +26,7 @@ def get_language_dataset(language, language2):
         'base_config':'config/udify_base.json',
         'device':-1,
         'predictor':'udify_predictor',
-}
+    }
 
     serialization_dir = os.path.join("logs", the_params['name'],
                     datetime.datetime.now().strftime("%Y.%m.%d_%H.%M.%S"))
@@ -45,7 +45,7 @@ def get_language_dataset(language, language2):
         "test_data_path": 
             os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu"),
         "vocabulary": {
-            "directory_path": os.path.join("data/vocab/multilingual/vocabulary")
+            "directory_path": os.path.join("data/vocab/english_only_expmix4/vocabulary")
         }
     }))
     configs.append(Params.from_file("./config/ud/en/udify_bert_finetune_en_ewt.json"))
