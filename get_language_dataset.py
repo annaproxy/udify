@@ -66,6 +66,6 @@ def get_language_dataset(language, language2):
 
     raw_train_generator = pieces.iterator(pieces.train_dataset,
                                                 num_epochs=1,
-                                                shuffle=False)
+                                                shuffle=True)
 
     return lazy_groups_of(raw_train_generator, 1)
