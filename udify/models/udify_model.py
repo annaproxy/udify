@@ -80,11 +80,14 @@ class UdifyModel(Model):
                 tokens: Dict[str, torch.LongTensor],
                 metadata: List[Dict[str, Any]] = None,
                 **kwargs: Dict[str, torch.LongTensor]) -> Dict[str, torch.Tensor]:
+        tokens = allennlp.nn.util.move_to_device(tokens,0)
+        
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAA IS THIS CALLED ")
         if "track_epoch" in kwargs:
             track_epoch = kwargs.pop("track_epoch")
 
         gold_tags = kwargs
+        gold_tags = allennlp.nn.util.move_to_device(gold_tags, 0)
         
         if "tokens" in self.tasks:
             # Model is predicting tokens, so add them to the gold tags
@@ -98,7 +101,8 @@ class UdifyModel(Model):
 
         if self.post_encoder_embedder:
             post_embeddings = self.post_encoder_embedder(tokens)
-
+        
+        # TODO probably move this to device
         encoded_text = self.shared_encoder(embedded_text_input, mask)
 
         logits = {}

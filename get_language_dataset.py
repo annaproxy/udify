@@ -24,7 +24,7 @@ def get_language_dataset(language, language2):
     the_params = {
         'name':'clean_dataload',
         'base_config':'config/udify_base.json',
-        'device':-1,
+        #'device':-1,
         'predictor':'udify_predictor',
     }
 
