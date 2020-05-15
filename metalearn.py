@@ -13,13 +13,13 @@ from torch import autograd
 # Czech, Russian, Hindi, Korean, Arabic
 
 training_tasks = []
-#training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
-#training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
+training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
+training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
 training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
-#training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
-#training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
-#training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
-#training_tasks.append(get_language_dataset('UD_Arabic-PADT','ar_padt-ud'))
+training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
+training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
+training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
+training_tasks.append(get_language_dataset('UD_Arabic-PADT','ar_padt-ud'))
 
 print("All Data Loaded")
 
@@ -28,7 +28,7 @@ m = Model.load(train_params, "logs/english_only_expmix4/2020.05.13_01.43.52",).c
 for param in m.parameters():
     print(param)
     param.requires_grad = True
-meta_m = MAML(m, 1e-4, True).cuda()
+meta_m = MAML(m, 1e-4, first_order=True, allow_unused=True).cuda()
 
 # TODO BERT params different update?
 optimizer =  Adam(meta_m.parameters(), 1e-4)
@@ -42,7 +42,7 @@ for iteration in range(100):
         support_set = next(task_generator)[0]
         query_set = next(task_generator)[0]
         inner_loss = learner.forward(**support_set)['loss']
-        print("\tone forward loss: ", inner_loss)
+        #print("\tone forward loss: ", inner_loss)
         learner.adapt(inner_loss, first_order=True)
         eval_loss = learner.forward(**query_set)['loss']
         iteration_loss += eval_loss
@@ -50,7 +50,10 @@ for iteration in range(100):
     optimizer.zero_grad()
     iteration_loss.backward()
     optimizer.step()
+
     print("Success", iteration_loss.item())
+    if iteration+1 % 10 == 0:
+        torch.save(meta_m.module.state_dict(),"finetune_", iteration, ".th")
 
 
 
