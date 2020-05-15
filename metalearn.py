@@ -25,9 +25,9 @@ print("All Data Loaded")
 
 train_params = get_params()
 m = Model.load(train_params, "logs/english_only_expmix4/2020.05.13_01.43.52",).cuda()
-for param in m.parameters():
-    print(param)
-    param.requires_grad = True
+#for param in m.parameters():
+#    print(param)
+#    param.requires_grad = True
 meta_m = MAML(m, 1e-4, first_order=True, allow_unused=True).cuda()
 
 # TODO BERT params different update?

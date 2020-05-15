@@ -68,4 +68,4 @@ def get_language_dataset(language, language2):
                                                 num_epochs=1,
                                                 shuffle=True)
 
-    return lazy_groups_of(raw_train_generator, 1)
+    return lazy_groups_of(raw_train_generator, 4)
