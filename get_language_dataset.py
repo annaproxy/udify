@@ -48,7 +48,7 @@ def get_language_dataset(language, language2):
             "directory_path": os.path.join("data/vocab/english_only_expmix4/vocabulary")
         }
     }))
-    configs.append(Params.from_file("./config/ud/en/udify_bert_finetune_en_ewt.json"))
+    configs.append(Params.from_file("./config/ud/en/udify_bert_finetune_en_ewt2.json"))
     configs.append(Params.from_file(the_params['base_config']))
    
     params = util.merge_configs(configs)
@@ -68,4 +68,4 @@ def get_language_dataset(language, language2):
                                                 num_epochs=1,
                                                 shuffle=True)
 
-    return lazy_groups_of(raw_train_generator, 4)
+    return lazy_groups_of(raw_train_generator, 1)
