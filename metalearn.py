@@ -34,7 +34,7 @@ meta_m = MAML(m, 1e-4, first_order=True, allow_unused=True).cuda()
 optimizer =  Adam(meta_m.parameters(), 1e-4)
 print("Model ready")
 
-with open("results_3lan.txt", "w") as f:
+with open("results_3lanNodel.txt", "w") as f:
     f.write("Model ready")
 
 for iteration in range(100):
@@ -46,8 +46,9 @@ for iteration in range(100):
         query_set = next(task_generator)[0]
         inner_loss = learner.forward(**support_set)['loss']
         print("\tone forward loss: ", inner_loss.item())
-        with open("results_3lan.txt", "a") as f:
+        with open("results_3lanNodel.txt", "a") as f:
             f.write("\tOne forward loss" + str(inner_loss.item()))
+            f.write("\n")
         learner.adapt(inner_loss, first_order=True)
         eval_loss = learner.forward(**query_set)['loss']
         iteration_loss += eval_loss
@@ -55,14 +56,15 @@ for iteration in range(100):
         del inner_loss 
         del support_set 
         del query_set
-        del learner
+        #del learner
     iteration_loss /= len(training_tasks)
     optimizer.zero_grad()
     iteration_loss.backward()
     optimizer.step()
     print("Success", iteration_loss.item())
-    with open("results_3lan.txt", "a") as f:
+    with open("results_3lanNodel.txt", "a") as f:
         f.write("Success" + str(iteration_loss.item()))
+        f.write("\n")
     del iteration_loss 
     with torch.no_grad():
         if iteration+1 % 10 == 0:
