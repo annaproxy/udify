@@ -24,7 +24,7 @@
     "word_dropout": 0.2,
     "mix_embedding": 12,
     "layer_dropout": 0.1,
-    "tasks": ["upos", "feats", "lemmas", "deps"],
+    "tasks": ["deps"],
     "text_field_embedder": {
       "type": "udify_embedder",
       "dropout": 0.5,

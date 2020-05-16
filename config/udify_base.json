@@ -34,7 +34,7 @@
     local task_layers = 1,
     
     "type": "udify_model",
-    "tasks": ["upos", "xpos", "feats", "lemmas", "deps"],
+    "tasks": ["deps"], 
     "dropout": global_dropout,
     "word_dropout": 0.2,
     "text_field_embedder": {
