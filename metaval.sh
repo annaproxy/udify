@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=meta_validate
-#SBATCH -t 8:40:00
+#SBATCH -t 1:40:00
 #SBATCH -N 1
 #SBATCH --partition=gpu_shared_course
 
@@ -34,10 +34,12 @@ echo "starting now"
 
 #python3 predict_and_eval_all_languages_separately.py
 
-for i in 0 1 2 3 4 5 6 7 8 do
-	dirname="episode$i"
-    tar -xzvf "$dirname/model.tar.gz" "$dirname"
-    python3 metavalidate.py --lazy --epoch $i
+for i in 2 3 4 5 6 7 8; do
+    #dirname="episode$i"
+    #tar -xzvf "$dirname/model.tar.gz" "$dirname"
+    var="EPOCH_NO=$i"
+    sed -i "1s/.*/$var/" metavalidate.py
+    python3 metavalidate.py 
 done
 
 echo "doneme up"
