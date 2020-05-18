@@ -7,7 +7,7 @@ from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
 
-def get_language_dataset(language, language2):
+def get_language_dataset(language, language2, validate=False):
     """
     A helper function that returns an Iterator[List[A]]
     Args:
@@ -63,8 +63,12 @@ def get_language_dataset(language, language2):
                                     recover=False,
                                     cache_directory=None,
                                     cache_prefix=None)
-
-    raw_train_generator = pieces.iterator(pieces.train_dataset,
+    if validate:
+        raw_train_generator = pieces.iterator(pieces.validation_dataset,
+                                                num_epochs=1,
+                                                shuffle=False)
+    else:
+        raw_train_generator = pieces.iterator(pieces.train_dataset,
                                                 num_epochs=1,
                                                 shuffle=True)
 
