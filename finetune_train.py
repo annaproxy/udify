@@ -25,12 +25,12 @@ print("All Data Loaded")
 train_params = get_params()
 
 BATCH_SIZE=16; SAVE_EVERY=40
-Path_model = './best.th'
+Path_model = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 
 model = Model.load(train_params, Path_model).cuda()
 model.train()
 
-optimizer =  Adam(model.parameters(), 1e-4)
+optimizer =  Adam(model.parameters(), 5e-5)
 losses = []; task_num_tokens_seen = np.zeros(len(training_tasks))
 
 for i, episode in enumerate(range(160)):
@@ -47,7 +47,7 @@ for i, episode in enumerate(range(160)):
         print('Loss: %.3f' % np.mean(losses[-100:]))
             
     if (i+1) % SAVE_EVERY == 0:
-        torch.save(model.state_dict(),"model_checkpoint_{}.th".format(i+1))
+        torch.save(model.state_dict(),"modellowlr_checkpoint_{}.th".format(i+1))
         print("Model #{} has been saved.".format(i+1))
         
 

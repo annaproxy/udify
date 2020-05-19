@@ -1,3 +1,5 @@
+EPOCH_NO=8
+print(EPOCH_NO)
 from get_language_dataset import get_language_dataset
 from i_hate_params_i_want_them_all_in_one_file import get_params
 from allennlp.models.model import Model
@@ -12,8 +14,7 @@ import argparse
 
 
 
-bulgarian_iterator, epoch  = get_language_dataset('UD_Bulgarian-BTB','bg_btb-ud')
-EPOCH_NO = 0
+bulgarian_iterator  = get_language_dataset('UD_Bulgarian-BTB','bg_btb-ud')
 train_params = get_params()
 m = Model.load(train_params, "episode" + str(EPOCH_NO)).cuda()
 optimizer =  Adam(m.parameters(), 1e-4)
