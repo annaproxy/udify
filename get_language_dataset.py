@@ -36,12 +36,15 @@ def get_language_dataset(language, language2, validate=False):
         overrides["trainer"] = {"cuda_device": args.device}
     if args.lazy is not None:
         overrides["dataset_reader"] = {"lazy": True}
+
+    trainpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-train.conllu")
+    valpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-dev.conllu")
     configs.append(Params(overrides))
     configs.append(Params({
         "train_data_path": 
-            os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-train.conllu"),
+            trainpath,
         "validation_data_path": 
-            os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-dev.conllu"),
+            valpath if os.path.exists(valpath) else trainpath,
         "test_data_path": 
             os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu"),
         "vocabulary": {
