@@ -2,6 +2,7 @@
 from get_language_dataset import get_language_dataset
 from i_hate_params_i_want_them_all_in_one_file import get_params
 from allennlp.models.model import Model
+from allennlp.models.archival import archive_model
 import os
 import torch
 from torch.optim import Adam
@@ -38,6 +39,7 @@ MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["mkdir", MODEL_VAL_DIR])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
+from allennlp.models.archival import archive_model
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/predictions"])
     subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
     subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])
@@ -65,11 +67,16 @@ for i, episode in enumerate(range(EPISODES)):
     if (i+1) % SAVE_EVERY == 0:
         print('Loss: %.3f' % np.mean(losses[-100:]))
 
+        # Save current model
         SAVE_FILENAME = "best.th"
         torch.save(model.state_dict(), os.path.join(MODEL_VAL_DIR, SAVE_FILENAME))
+        archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
+
+        # Save predictions also
         current_pred_file = os.path.join(MODEL_VAL_DIR,'predictions', "temp_val.conllu")
         current_output_file = os.path.join(MODEL_VAL_DIR,'performance', "temp_performance" + str(i) + ".json")
 
+        # Evaluate with horrible wrapper
         util.predict_and_evaluate_model(
             "udify_predictor",
             train_params,
@@ -79,12 +86,14 @@ for i, episode in enumerate(range(EPISODES)):
             current_output_file,
             batch_size=16
         )
-        # Easiest way is just to fucking die and dump it to json and then read it.
+
+        # The wrapper can only output json so we read it
         with open(current_output_file, 'r') as f:
             performance_dict = json.load(f)
             val_LAS = performance_dict['LAS']['aligned_accuracy']
             print(val_LAS)
 
+        # bookkeeping, save next best model, etc
         if val_LAS > best_validation_LAS:
             best_validation_LAS = val_LAS
             best_iteration = i
@@ -99,6 +108,8 @@ for i, episode in enumerate(range(EPISODES)):
             best_filename = backup_path
         else:
             patience -= 1
+    if patience == 0 and iteration > warmup_steps:
+        print("Patience ran out, quitting", iteration)
             
 print("Best iteration:", best_iteration, best_filename)
 print("Success, Epoch's Last iteration loss: {}".format(losses[-1]))
