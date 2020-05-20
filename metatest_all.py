@@ -49,8 +49,8 @@ for i, language in enumerate(languages):
     archive_model(SERIALIZATION_DIR, files_to_archive=train_params.files_to_archive, archive_path = SERIALIZATION_DIR)
 
     # Get specific predictions for this finetuned guy
-    current_pred_file = os.path.join('predictions',language +'.conllu')
-    current_output_file = os.path.join('performance',language+'.json')
+    current_pred_file = os.path.join(WHERE_TO_SAVE,language +'_predictions.conllu')
+    current_output_file = os.path.join(WHERE_TO_SAVE,language+'_performance.json')
 
     util.predict_and_evaluate_model(
         "udify_predictor",

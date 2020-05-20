@@ -1,33 +1,5 @@
 import json
-
-languages = [
-    "UD_Arabic-PADT",
-    "UD_Armenian-ArmTDP",
-    "UD_Breton-KEB",
-    "UD_Bulgarian-BTB",
-    "UD_Buryat-BDT",
-    "UD_Czech-PDT",
-    "UD_English-EWT",
-    "UD_Faroese-OFT",
-    "UD_Finnish-TDT",
-    "UD_French-Spoken",
-    "UD_German-GSD",
-    "UD_Hindi-HDTB",
-    "UD_Hungarian-Szeged",
-    "UD_Italian-ISDT",
-    "UD_Japanese-GSD",
-    "UD_Kazakh-KTB",
-    "UD_Korean-Kaist",
-    "UD_Norwegian-Nynorsk",
-    "UD_Persian-Seraji",
-    "UD_Russian-SynTagRus",
-    "UD_Swedish-PUD",
-    "UD_Tamil-TTB",
-    "UD_Telugu-MTG",
-    "UD_Upper_Sorbian-UFAL",
-    "UD_Urdu-UDTB",
-    'UD_Vietnamese-VTB'
-]
+from naming_conventions import languages
 
 tran_expen = [34.55,40.20,45.16,0,19.19,59.97,84.64,58.28,50.65, #finnish
     54.12, 68.30, 32.94, 52.72, 75.45, 12.92, 33.56, 33.67, 72.09, #norwe

@@ -107,8 +107,8 @@ for i, episode in enumerate(range(EPISODES)):
             best_filename = backup_path
         else:
             patience -= 1
-    if patience == 0 and iteration > warmup_steps:
-        print("Patience ran out, quitting", iteration)
+    if patience == 0 and i > warmup_steps:
+        print("Patience ran out, quitting", i)
             
 print("Best iteration:", best_iteration, best_filename)
 print("Success, Epoch's Last iteration loss: {}".format(losses[-1]))

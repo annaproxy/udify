@@ -39,14 +39,16 @@ def get_language_dataset(language, language2, validate=False):
 
     trainpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-train.conllu")
     valpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-dev.conllu")
+    testpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu")
+
     configs.append(Params(overrides))
     configs.append(Params({
         "train_data_path": 
-            trainpath,
+            trainpath if os.path.exists(valpath) else testpath,
         "validation_data_path": 
-            valpath if os.path.exists(valpath) else trainpath,
+            valpath if os.path.exists(valpath) else (trainpath if os.path.exists(trainpath) else testpath),
         "test_data_path": 
-            os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu"),
+            testpath,
         "vocabulary": {
             "directory_path": os.path.join("data/vocab/english_only_expmix4/vocabulary")
         }
