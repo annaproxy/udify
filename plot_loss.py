@@ -28,7 +28,7 @@ languages = ["italian", "norwegian", "czech", "russian", "hindi","korean","arabi
 #training_tasks.append(get_language_dataset('UD_Arabic-PADT','ar_padt-ud'))
 lan = 0 
 yes = 0
-with open("losses.txt", "r") as f: 
+with open("many.txt", "r") as f: 
     for line in f:
 
         if line.startswith("meta"):
@@ -47,8 +47,10 @@ ax2.legend()
 #for i,lan in enumerate(language_losses):
 #    print(len(language_losses[lan]))
 #    plt.plot(np.arange(yes), language_losses[lan], label=languages[i] )
-
-#plt.show()
+ax1.grid()
+ax2.grid()
+plt.show()
+"""
 
 fig, (ax1,ax2) = plt.subplots(2,1)
 
@@ -67,5 +69,5 @@ for i,lan in enumerate(language_losses):
         ax2.plot(np.arange(len(s)), realplot, label=languages[i] )
 ax1.legend()
 ax2.legend()
-
-plt.show()
+plt.grid()
+plt.show()"""

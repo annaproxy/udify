@@ -46,7 +46,7 @@ for iteration in range(100):
         query_set = next(task_generator)[0]
         inner_loss = learner.forward(**support_set)['loss']
         print("\tone forward loss: ", inner_loss.item())
-        with open("results_3lanNodel.txt", "a") as f:
+        with open("results_test.txt", "a") as f:
             f.write("\tOne forward loss" + str(inner_loss.item()))
             f.write("\n")
         learner.adapt(inner_loss, first_order=True)
@@ -56,8 +56,8 @@ for iteration in range(100):
         del inner_loss 
         del support_set 
         del query_set
-        #del learner
-    iteration_loss /= len(training_tasks)
+        del learner
+    #iteration_loss /= len(training_tasks)
     optimizer.zero_grad()
     iteration_loss.backward()
     optimizer.step()

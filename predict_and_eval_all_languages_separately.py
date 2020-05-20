@@ -18,8 +18,8 @@ with open("all_expmix_test.txt", "r") as f:
 
 for test_file in all_files:
     current_gold_file = test_file 
-    language_name = test_file.split('/')[2] + '_predicted_finetunelowlr160.conllu'
-    performance_name = test_file.split('/')[2] + '_results_finetunelowlr160.json'
+    language_name = test_file.split('/')[2] + '_predicted_metalearnlowlr_bulgarian.conllu'
+    performance_name = test_file.split('/')[2] + '_results_metalearnlowlr_bulgarian.json'
     
     #current_pred_file = os.path.join('predictions',language_name)
     #current_output_file = os.path.join('performance', performance_name)

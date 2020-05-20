@@ -44,11 +44,28 @@ for i,lan in enumerate(languages):
     with open("results/" + lan + "_results_zero.json", "r") as f:
         zero_results = json.load(f)
 
+    with open("results/" + lan + "_results_finetunelowlr160.json", "r") as f:
+        ft_results_low = json.load(f)
+
+    with open("results/" + lan + "_results_finetune160.json", "r") as f:
+        ft_results = json.load(f)
+
     with open("results/" + lan + "_results_metazero.json", "r") as f:
         meta_results = json.load(f)
 
+    with open("results/" + lan + "_results_metalowlr160.json", "r") as f:
+        meta_results_low = json.load(f)
+
+    with open("results/" + lan + "_results_metalowlr5.json", "r") as f:
+        meta_results_low2 = json.load(f)
+    
+
     en_zero = round(zero_results['LAS']['aligned_accuracy'], 3)
-    meta_zero = round(meta_results['LAS']['aligned_accuracy'],3)
+    meta_zero_high = round(meta_results['LAS']['aligned_accuracy'],3)
+    finetune_low = round(ft_results_low['LAS']['aligned_accuracy'],3)
+    finetune_high = round(ft_results['LAS']['aligned_accuracy'],3)
+    meta_zero_low = round(meta_results_low2['LAS']['aligned_accuracy'],3)
+    meta_zero_low2 = round(meta_results_low['LAS']['aligned_accuracy'],3)
 
     tran_en_zero = round(tran_expen[i]/100,3)
     tran_expmix_zero = round(tran_expmix[i]/100,3)
@@ -56,7 +73,11 @@ for i,lan in enumerate(languages):
     color = '\\rowcolor{LightCyan}' if i in train_lans else ("\\rowcolor{LightRed}" if i in low_lans else '')
     print(color, lan[3:], 
         '&', en_zero, 
-        '&', meta_zero, 
+        '&', finetune_high,
+        '&', finetune_low,
+        '&', meta_zero_high,
+        '&', meta_zero_low, 
+        '&', meta_zero_low2,
         '&', tran_en_zero,
         '&', tran_expmix_zero,  '\\\\')
 

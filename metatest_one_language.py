@@ -20,7 +20,7 @@ LAN_GOLD = "data/expmix/" + LAN1 + "/" + LAN2 + "-test.conllu"
 
 
 # Create directory and copy relevant files there for later
-SERIALIZATION_DIR = 'results' + LAN1
+SERIALIZATION_DIR = 'resultsvalidation' + LAN1
 subprocess.run(["mkdir", SERIALIZATION_DIR])
 subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
 subprocess.run(["cp", MODEL_DIR +"/config.json", SERIALIZATION_DIR])
