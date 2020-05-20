@@ -33,9 +33,16 @@ warmup_steps = 50
 
 MODEL_SAVE_NAME = "finetune_5e5"
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
-Path_model = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
+MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 
-model = Model.load(train_params, Path_model).cuda()
+if not os.path.exists(MODEL_VAL_DIR):
+    subprocess.run(["mkdir", MODEL_VAL_DIR])
+    subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
+    subprocess.run(["mkdir", MODEL_VAL_DIR + "/predictions"])
+    subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
+    subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])
+
+model = Model.load(train_params, MODEL_FILE).cuda()
 model.train()
 
 optimizer =  Adam(model.parameters(), LR)
