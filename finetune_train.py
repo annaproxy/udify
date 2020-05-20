@@ -7,9 +7,6 @@ import torch
 from torch.optim import Adam
 from torch import autograd
 import numpy as np 
-#raise ValueError("Done")
-# Tran&Bisazza: Italian, Norwegian, 
-# Czech, Russian, Hindi, Korean, Arabic
 
 training_tasks = []
 training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
@@ -24,7 +21,7 @@ print("All Data Loaded")
 
 train_params = get_params()
 
-BATCH_SIZE=16; SAVE_EVERY=40
+SAVE_EVERY=40
 Path_model = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 
 model = Model.load(train_params, Path_model).cuda()
