@@ -15,13 +15,18 @@ MODEL_DIR_PRETRAIN = "logs/english_expmix_deps/2020.05.17_01.08.52/"
 MODEL_DIR_FINETUNE = "metalearn_5e5VAL"
 MODEL_DIR = MODEL_DIR_FINETUNE
 
+WHERE_TO_SAVE = "metatesting" + MODEL_DIR
+
+subprocess.run(["mkdir", WHERE_TO_SAVE])
+
 # The language on which to evaluate 
 for i, language in enumerate(languages):
     test_file = "data/expmix/" + language + "/" + languages_lowercase[1] + "-test.conllu"
     val_iterator = get_language_dataset(language, languages_lowercase[1], validate=True)
 
     # Create directory and copy relevant files there for later
-    SERIALIZATION_DIR = 'resultsvalidation' + language
+    SERIALIZATION_DIR = WHERE_TO_SAVE + '/resultsvalidation' + language
+    
     subprocess.run(["mkdir", SERIALIZATION_DIR])
     subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
     subprocess.run(["cp", MODEL_DIR +"/config.json", SERIALIZATION_DIR])
