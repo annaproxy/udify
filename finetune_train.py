@@ -39,7 +39,6 @@ MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["mkdir", MODEL_VAL_DIR])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
-from allennlp.models.archival import archive_model
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/predictions"])
     subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
     subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])

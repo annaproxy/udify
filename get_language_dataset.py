@@ -35,7 +35,7 @@ def get_language_dataset(language, language2, validate=False):
     if args.device is not None:
         overrides["trainer"] = {"cuda_device": args.device}
     if args.lazy is not None:
-        overrides["dataset_reader"] = {"lazy": args.lazy}
+        overrides["dataset_reader"] = {"lazy": True}
     configs.append(Params(overrides))
     configs.append(Params({
         "train_data_path": 

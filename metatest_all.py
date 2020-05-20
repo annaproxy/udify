@@ -12,15 +12,13 @@ from get_language_dataset import get_language_dataset
 
 # The model on which to Meta_test
 MODEL_DIR_PRETRAIN = "logs/english_expmix_deps/2020.05.17_01.08.52/"
-MODEL_DIR_FINETUNE = "episode6/"
+MODEL_DIR_FINETUNE = "metalearn_5e5VAL"
 MODEL_DIR = MODEL_DIR_FINETUNE
 
 # The language on which to evaluate 
 for i, language in enumerate(languages):
-    test_file = "data/expmix/" + "UD_Bulgarian-BTB" + "/" + "bg_btb-ud" + "-test.conllu"
+    test_file = "data/expmix/" + language + "/" + languages_lowercase[1] + "-test.conllu"
     val_iterator = get_language_dataset(language, languages_lowercase[1], validate=True)
-    # example expmix/UD_Finnish-TDT/fi_tdt-ud-
-
 
     # Create directory and copy relevant files there for later
     SERIALIZATION_DIR = 'resultsvalidation' + language
