@@ -14,7 +14,7 @@ from get_language_dataset import get_language_dataset
 MODEL_DIR_PRETRAIN = "logs/english_expmix_deps/2020.05.17_01.08.52/"
 MODEL_DIR_FINETUNE = "metalearn_5e5VAL"
 MODEL_DIR = MODEL_DIR_FINETUNE
-
+LR = 1e-4
 WHERE_TO_SAVE = "metatesting" + MODEL_DIR
 
 subprocess.run(["mkdir", WHERE_TO_SAVE])
@@ -34,7 +34,7 @@ for i, language in enumerate(languages):
     # Set up model and iterator and optimizer
     train_params = get_params()
     m = Model.load(train_params, MODEL_DIR).cuda()
-    optimizer =  Adam(m.parameters(), 1e-4)
+    optimizer =  Adam(m.parameters(), LR)
 
     # Do one forward pass
     support_set = next(val_iterator)[0]

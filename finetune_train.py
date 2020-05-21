@@ -111,6 +111,10 @@ for i, episode in enumerate(range(EPISODES)):
         print("Patience ran out, quitting", i)
             
 print("Best iteration:", best_iteration, best_filename)
+subprocess.run(["cp", best_filename, "best.th"])
+archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
+print("Archived best iteration.")
+
 print("Success, Epoch's Last iteration loss: {}".format(losses[-1]))
 normalized_tokens_seen = task_num_tokens_seen / np.max(task_num_tokens_seen)
 print("Number of Tokens seen per task: {}, relative to maximum: {}".format(task_num_tokens_seen, normalized_tokens_seen))
