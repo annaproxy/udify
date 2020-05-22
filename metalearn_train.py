@@ -61,7 +61,7 @@ warmup_steps = args.warmup_steps
 MORE_LR =  args.more_lr == 1 
 
 MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/"
-MODEL_SAVE_NAME = "metalearn_" + str(META_LR) + "_" + str(INNER_LR) + "_" + str(MORE_LR)
+MODEL_SAVE_NAME = "metalearn_" + str(META_LR) + "_" + str(INNER_LR) + "_" + str(MORE_LR) + "_" + STR(UPDATES)
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
 VAL_WRITER = MODEL_VAL_DIR + '/val_las.txt'
 META_WRITER = MODEL_VAL_DIR + "/meta_results.txt"
