@@ -164,7 +164,8 @@ for iteration in range(EPISODES):
             best_iteration = iteration
             patience = 3
             # Remove previous best
-            subprocess.run(["rm", best_filename ])
+            if best_filename is not None:
+                subprocess.run(["rm", best_filename ])
 
             # Save META model for later inference
             backup_path = os.path.join(MODEL_VAL_DIR, "model" + str(iteration) + ".th")
