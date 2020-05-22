@@ -20,13 +20,14 @@ parser.add_argument("--episodes", default=400, type=int, help="Episode amount")
 parser.add_argument("--warmup_steps", default=40, type=int, help="Episode amount")
 parser.add_argument("--small_test", default=0, type=int, help="only 1 language for debuggin")
 parser.add_argument("--include_japanese", default=0, type=int, help="Include Japanese next to Bulgarian as validation language")
+parser.add_argument("--more_lr", default = 0, type=int, help="Update BERT less fast in outer ")
 
 args = parser.parse_args()
 
 
 training_tasks = []
+training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
 if args.small_test == 0:
-    training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
     training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
     training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
     training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
@@ -42,24 +43,34 @@ train_params = get_params("finetuning")
 SAVE_EVERY = 10
 EPISODES = args.episodes
 LR = args.lr
+LR_SMALL = LR / 15.0
 patience = 3
 warmup_steps = args.warmup_steps
+MORE_LR =  args.more_lr == 1 
 
-MODEL_SAVE_NAME = "finetune_5e5"
+MODEL_SAVE_NAME = "metalearn_" + str(LR) + "_" + str(MORE_LR)
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
 MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
+VAL_WRITER = MODEL_VAL_DIR + '/val_las.txt'
+
 
 if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["mkdir", MODEL_VAL_DIR])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/predictions"])
     subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
-    subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])
+    subprocess.run(["cp", MODEL_FILE +"/config.jmodelson", MODEL_VAL_DIR])
 
 model = Model.load(train_params, MODEL_FILE).cuda()
 model.train()
 
-optimizer =  Adam(model.parameters(), LR)
+if not MORE_LR:
+    optimizer =  Adam(model.parameters(), LR)
+else:
+    optimizer =  Adam([{'params': model.module.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
+                    {'params':model.module.decoders.parameters(), 'lr':LR}, 
+                    {'params':model.module.scalar_mix.parameters(), 'lr':LR}], LR)
+                    
 losses = []; task_num_tokens_seen = np.zeros(len(training_tasks))
 
 best_validation_LAS = 0.0
@@ -103,7 +114,9 @@ for i, episode in enumerate(range(EPISODES)):
         with open(current_output_file, 'r') as f:
             performance_dict = json.load(f)
             val_LAS = performance_dict['LAS']['aligned_accuracy']
-            print(val_LAS)
+            with open(VAL_WRITER,"a") as f:
+                f.write(str(i) + '\t' + str(val_LAS))
+                f.write('\n')
 
         # bookkeeping, save next best model, etc
         if val_LAS > best_validation_LAS:
@@ -124,11 +137,11 @@ for i, episode in enumerate(range(EPISODES)):
         print("Patience ran out, quitting", i)
             
 print("Best iteration:", best_iteration, best_filename)
-subprocess.run(["cp", best_filename, "best.th"])
+subprocess.run(["cp", best_filename, MODEL_VAL_DIR + "/best.th"])
 archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
 
 with open(MODEL_VAL_DIR + "/best_iter.txt", "w") as f:
-    f.write(best_iteration)
+    f.write(str(best_iteration))
     f.write('\n')
     f.write(best_filename)
 print("Archived best iteration.")

@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start_from_pretrain", default=0, type=int, help="Whether to start from pretrain")
 parser.add_argument("--model_dir", default=None, type=str, help="Directory from which to start testing if not starting from pretrain")
 parser.add_argument("--output_lr", default=None, type=float, help="Fast adaptation output learning rate")
+parser.add_argument("--updates", default=1, type=int, help="Amount of inner loop updates")
+
 args = parser.parse_args()
 
 # The model on which to Meta_test

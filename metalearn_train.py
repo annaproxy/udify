@@ -30,12 +30,13 @@ parser.add_argument("--warmup_steps", default=40, type=int, help="Episode amount
 parser.add_argument("--updates", default=1, type=int, help="Amount of inner loop updates")
 parser.add_argument("--small_test", default=0, type=int, help="only 1 language for debuggin")
 parser.add_argument("--include_japanese", default=0, type=int, help="Include Japanese next to Bulgarian as validation language")
+parser.add_argument("--more_lr", default = 0, type=int, help="Update BERT less fast in outer ")
 args = parser.parse_args()
 
 
 training_tasks = []
+training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
 if args.small_test == 0:
-    training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
     training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
     training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
     training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
@@ -53,14 +54,17 @@ SAVE_EVERY=10
 EPISODES = args.episodes
 INNER_LR = args.inner_lr 
 META_LR = args.meta_lr
+META_LR_SMALL = args.meta_lr / 15.0
 UPDATES = args.updates
 patience = 3
 warmup_steps = args.warmup_steps
+MORE_LR =  args.more_lr == 1 
 
 MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/"
-MODEL_SAVE_NAME = "metalearn_" + str(META_LR) + "_" + str(INNER_LR)
+MODEL_SAVE_NAME = "metalearn_" + str(META_LR) + "_" + str(INNER_LR) + "_" + str(MORE_LR)
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
-
+VAL_WRITER = MODEL_VAL_DIR + '/val_las.txt'
+META_WRITER = MODEL_VAL_DIR + "/meta_results.txt"
 if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["mkdir", MODEL_VAL_DIR])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
@@ -71,12 +75,17 @@ if not os.path.exists(MODEL_VAL_DIR):
 train_params = get_params("metalearning")
 m = Model.load(train_params, MODEL_FILE,).cuda()
 meta_m = MAML(m, INNER_LR, first_order=True, allow_unused=True).cuda()
-optimizer =  Adam(meta_m.parameters(), META_LR)
+if not MORE_LR:
+    optimizer =  Adam(meta_m.parameters(), META_LR)
+else:
+    optimizer =  Adam([{'params': meta_m.module.text_field_embedder.parameters(), 'lr':META_LR_SMALL}, 
+                    {'params':meta_m.module.decoders.parameters(), 'lr':META_LR}, 
+                    {'params':meta_m.module.scalar_mix.parameters(), 'lr':META_LR}], META_LR)
 
-with open("some_results.txt", "w") as f:
+with open(META_WRITER, "w") as f:
     f.write("Model ready\n")
 
-with open("val_las.txt", "w") as f:
+with open(VAL_WRITER, "w") as f:
     f.write("Model ready\n")
 
 best_validation_LAS = 0.0
@@ -117,7 +126,7 @@ for iteration in range(EPISODES):
 
     # Bookkeeping
     print(iteration, "meta", iteration_loss.item())
-    with open("some_results.txt", "a") as f:
+    with open(META_WRITER, "a") as f:
         f.write(str(iteration) + " meta " + str(iteration_loss.item()))
         f.write("\n")
     del iteration_loss 
@@ -154,8 +163,8 @@ for iteration in range(EPISODES):
         with open(current_output_file, 'r') as f:
             performance_dict = json.load(f)
             val_LAS = performance_dict['LAS']['aligned_accuracy']
-            with open("val_las.txt","a") as f:
-                f.write(str(val_LAS))
+            with open(VAL_WRITER,"a") as f:
+                f.write(str(iteration) + '\t' + str(val_LAS))
                 f.write('\n')
 
         # Check if we are doing better!
@@ -184,10 +193,10 @@ for iteration in range(EPISODES):
 
 
 print("Best iteration:", best_iteration, best_filename)
-subprocess.run(["cp", best_filename, "best.th"])
+subprocess.run(["cp", best_filename, MODEL_VAL_DIR+"/best.th"])
 archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
 with open(MODEL_VAL_DIR + "/best_iter.txt", "w") as f:
-    f.write(best_iteration)
+    f.write(str(best_iteration))
     f.write('\n')
     f.write(best_filename)
 print("Archived best iteration.")
