@@ -7,7 +7,7 @@ from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
 
-def get_language_dataset(language, language2, validate=False):
+def get_language_dataset(language, language2, validate=False, cpu_for_some_reason=False):
     """
     A helper function that returns an Iterator[List[A]]
     Args:
@@ -15,10 +15,10 @@ def get_language_dataset(language, language2, validate=False):
         language2: the lowercased variant, ie. ru_taiga-ud or pt_gsd-ud
         Why are these files named this way? I do not know, one of the mysteries of udify
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
-    parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
+    #parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
+    #args = parser.parse_args()
 
     configs = []
     the_params = {
@@ -32,10 +32,12 @@ def get_language_dataset(language, language2, validate=False):
                     datetime.datetime.now().strftime("%Y.%m.%d_%H.%M.%S"))
 
     overrides = {}
-    if args.device is not None:
-        overrides["trainer"] = {"cuda_device": args.device}
-    if args.lazy is not None:
-        overrides["dataset_reader"] = {"lazy": True}
+    #if args.device is not None:
+    #    overrides["trainer"] = {"cuda_device": args.device}
+    #if args.lazy is not None:
+    if cpu_for_some_reason:
+        overrides["trainer"] = {"cuda_device": -1}
+    overrides["dataset_reader"] = {"lazy": True}
 
     trainpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-train.conllu")
     valpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-dev.conllu")

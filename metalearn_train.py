@@ -20,14 +20,27 @@ import subprocess
 from udify import util
 import json
 import subprocess
+import argparse 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--meta_lr", default=None, type=float, help="Meta adaptation LR")
+parser.add_argument("--inner_lr", default=None, type=float, help="Inner learner LR" )
+parser.add_argument("--episodes", default=200, type=int, help="Episode amount")
+parser.add_argument("--warmup_steps", default=40, type=int, help="Episode amount")
+parser.add_argument("--updates", default=1, type=int, help="Amount of inner loop updates")
+parser.add_argument("--small_test", default=0, type=int, help="only 1 language for debuggin")
+parser.add_argument("--include_japanese", default=0, type=int, help="Include Japanese next to Bulgarian as validation language")
+args = parser.parse_args()
+
 
 training_tasks = []
-training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
-training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
-training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
-training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
-training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
-training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
+if args.small_test == 0:
+    training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
+    training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
+    training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
+    training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
+    training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
+    training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
 training_tasks.append(get_language_dataset('UD_Arabic-PADT','ar_padt-ud'))
 
 # Get some samples from train set
@@ -37,14 +50,15 @@ validation_test_set = "data/expmix/" + "UD_Bulgarian-BTB" + "/" + "bg_btb-ud" + 
 print("All Data Loaded")
 
 SAVE_EVERY=10
-EPISODES = 200
-INNER_LR = 1e-4
-META_LR = 5e-5
+EPISODES = args.episodes
+INNER_LR = args.inner_lr 
+META_LR = args.meta_lr
+UPDATES = args.updates
 patience = 3
-warmup_steps = 50
+warmup_steps = args.warmup_steps
 
 MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/"
-MODEL_SAVE_NAME = "metalearn_5e5"
+MODEL_SAVE_NAME = "metalearn_" + str(META_LR) + "_" + str(INNER_LR)
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
 
 if not os.path.exists(MODEL_VAL_DIR):
@@ -54,7 +68,7 @@ if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
     subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])
 
-train_params = get_params()
+train_params = get_params("metalearning")
 m = Model.load(train_params, MODEL_FILE,).cuda()
 meta_m = MAML(m, INNER_LR, first_order=True, allow_unused=True).cuda()
 optimizer =  Adam(meta_m.parameters(), META_LR)
@@ -80,9 +94,9 @@ for iteration in range(EPISODES):
         learner = meta_m.clone()
         support_set = next(task_generator)[0]
         query_set = next(task_generator)[0]
-        inner_loss = learner.forward(**support_set)['loss']
-        print("\t", inner_loss.item())
-        learner.adapt(inner_loss, first_order=True)
+        for mini_epoch in range(UPDATES):
+            inner_loss = learner.forward(**support_set)['loss']
+            learner.adapt(inner_loss, first_order=True)
         eval_loss = learner.forward(**query_set)['loss']
 
         # Bookkeeping
@@ -114,8 +128,9 @@ for iteration in range(EPISODES):
         vallearner = meta_m.clone()
         batch = next(validation_iterator)
         print("Batch", batch)
-        metaval_loss = vallearner.forward(**batch[0])['loss']
-        vallearner.adapt(metaval_loss, first_order=True)
+        for mini_epoch in range(UPDATES):
+            metaval_loss = vallearner.forward(**batch[0])['loss']
+            vallearner.adapt(metaval_loss, first_order=True)
 
         # Save model, this is necessary for prediction
         SAVE_FILENAME = "best.th"
@@ -170,12 +185,16 @@ for iteration in range(EPISODES):
 print("Best iteration:", best_iteration, best_filename)
 subprocess.run(["cp", best_filename, "best.th"])
 archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
+with open(MODEL_VAL_DIR + "/best_iter.txt", "w") as f:
+    f.write(best_iteration)
+    f.write('\n')
+    f.write(best_filename)
 print("Archived best iteration.")
 
 
-normalized_tokens_seen = task_num_tokens_seen / np.max(task_num_tokens_seen)
-print("Number of Tokens seen per task: {}, relative to maximum: {}".format(task_num_tokens_seen, normalized_tokens_seen))
-np.save('task_num_tokens_seen.npy', task_num_tokens_seen)
+#normalized_tokens_seen = task_num_tokens_seen / np.max(task_num_tokens_seen)
+#print("Number of Tokens seen per task: {}, relative to maximum: {}".format(task_num_tokens_seen, normalized_tokens_seen))
+#np.save('task_num_tokens_seen.npy', task_num_tokens_seen)
 
 
 

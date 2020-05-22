@@ -11,26 +11,39 @@ import numpy as np
 from udify import util 
 import json 
 import subprocess
+import argparse 
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--lr", default=None, type=float, help="Adaptation LR")
+parser.add_argument("--episodes", default=400, type=int, help="Episode amount")
+parser.add_argument("--warmup_steps", default=40, type=int, help="Episode amount")
+parser.add_argument("--small_test", default=0, type=int, help="only 1 language for debuggin")
+parser.add_argument("--include_japanese", default=0, type=int, help="Include Japanese next to Bulgarian as validation language")
+
+args = parser.parse_args()
+
 
 training_tasks = []
-training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
-training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
-training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
-training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
-training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
-training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
+if args.small_test == 0:
+    training_tasks.append(get_language_dataset('UD_Italian-ISDT','it_isdt-ud'))
+    training_tasks.append(get_language_dataset('UD_Norwegian-Nynorsk','no_nynorsk-ud'))
+    training_tasks.append(get_language_dataset('UD_Czech-PDT','cs_pdt-ud'))
+    training_tasks.append(get_language_dataset('UD_Russian-SynTagRus','ru_syntagrus-ud'))
+    training_tasks.append(get_language_dataset('UD_Hindi-HDTB','hi_hdtb-ud'))
+    training_tasks.append(get_language_dataset('UD_Korean-Kaist','ko_kaist-ud'))
 training_tasks.append(get_language_dataset('UD_Arabic-PADT','ar_padt-ud'))
 
 validation_test_set = "data/expmix/" + "UD_Bulgarian-BTB" + "/" + "bg_btb-ud" + "-dev.conllu"
 
 print("All Data Loaded")
-train_params = get_params()
+train_params = get_params("finetuning")
 
 SAVE_EVERY = 10
-EPISODES = 400
-LR = 5e-5
+EPISODES = args.episodes
+LR = args.lr
 patience = 3
-warmup_steps = 50
+warmup_steps = args.warmup_steps
 
 MODEL_SAVE_NAME = "finetune_5e5"
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
@@ -113,9 +126,9 @@ for i, episode in enumerate(range(EPISODES)):
 print("Best iteration:", best_iteration, best_filename)
 subprocess.run(["cp", best_filename, "best.th"])
 archive_model(MODEL_VAL_DIR, files_to_archive=train_params.files_to_archive, archive_path =MODEL_VAL_DIR)
-print("Archived best iteration.")
 
-print("Success, Epoch's Last iteration loss: {}".format(losses[-1]))
-normalized_tokens_seen = task_num_tokens_seen / np.max(task_num_tokens_seen)
-print("Number of Tokens seen per task: {}, relative to maximum: {}".format(task_num_tokens_seen, normalized_tokens_seen))
-np.save('task_num_tokens_seen.npy', task_num_tokens_seen)
+with open(MODEL_VAL_DIR + "/best_iter.txt", "w") as f:
+    f.write(best_iteration)
+    f.write('\n')
+    f.write(best_filename)
+print("Archived best iteration.")

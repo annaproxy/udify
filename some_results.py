@@ -1,4 +1,5 @@
 import json
+import numpy as np 
 from naming_conventions import languages
 print(len(languages))
 
@@ -21,83 +22,94 @@ print("Language & \\multicolumn{3}{c|}{Zero-Shot} & \\multicolumn{"+str(how_many
             "}{c|}{Meta-Testing} & \\multicolumn{2}{c|}{Tran\\&Bisazza}\\\\\\hline")
 print("&English&NE&META&" + ('&'.join(middle)) + "&expEn&expMix\\\\\\hline")
 
+def round_LAS(r):
+    return round(r['LAS']['aligned_accuracy'], 3)
 
 for i,lan in enumerate(languages):
+    yeah_dictionary = {
+        "english" : {"zero":{}, "test":{}}, "ne" : {"zero":{}, "test":{}}, "meta": {"zero":{}, "test":{}}
+    }
+    # Load all inconsistently named json files into a dictionary:
+    # yeah_dictionary[model][zero|test][Training Learning Rate][Meta Testing Learning Rate]
     with open("results/" + lan + "_results_zero.json", "r") as f:
         zero_results = json.load(f)
+        yeah_dictionary["english"]["zero"][None] = zero_results
 
     with open("results/" + lan + "_results_finetunelowlr_real.json", "r") as f:
         finetune_zero_results = json.load(f)
+        yeah_dictionary["ne"]["zero"][1e-4] = finetune_zero_results
 
     with open("results/" + lan + "_results_metalearnlowlr_real.json", "r") as f:
         meta_zero_results = json.load(f)
+        yeah_dictionary["meta"]["zero"][1e-4] = meta_zero_results
 
     with open("results/finetunekid/" + lan + "_performance.json", "r") as f:
         finetune_few_results = json.load(f)
+        yeah_dictionary["ne"]["test"][1e-4] = {}
+        yeah_dictionary["ne"]["test"][1e-4][1e-4] = finetune_few_results
     
     with open("results/metakid/" + lan + "_performance.json", "r") as f:
         meta_few_results = json.load(f)
+        yeah_dictionary["meta"]["test"][1e-4] = {}
+        yeah_dictionary["meta"]["test"][1e-4][1e-4] = meta_few_results
 
     with open("results/metatest1e4finetune1e5/" + lan + "_performance.json", "r") as f:
         lowlr_finetune_results = json.load(f)
+        yeah_dictionary["ne"]["test"][1e-5] = {}
+        yeah_dictionary["ne"]["test"][1e-5][1e-4] = lowlr_finetune_results
 
     with open("results/metatest1e4metalearn1e5/" + lan + "_performance.json", "r") as f:
         lowlr_metalearn_results = json.load(f)
+        yeah_dictionary["meta"]["test"][1e-5] = {}
+        yeah_dictionary["meta"]["test"][1e-5][1e-4] = lowlr_metalearn_results
 
     with open("results/metatest5e5metakid/" + lan + "_performance.json", "r") as f:
         metakid_lowmetatest = json.load(f)
+        yeah_dictionary["meta"]["test"][1e-4][5e-5] = metakid_lowmetatest
 
     with open("results/metatest5e5finetune_5e5/" + lan + "_performance.json", "r") as f:
         metakid_lowfttest = json.load(f)
+        yeah_dictionary["ne"]["test"][1e-4][5e-5] = metakid_lowfttest
 
     with open("results/finetuneonly/" + lan + "_performance.json", "r") as f:
         finetuneonly = json.load(f)
+        yeah_dictionary["english"]["test"][None] = {}
+        yeah_dictionary["english"]["test"][None][1e-4] = finetuneonly
 
     with open("results/metatestonly5e5/" + lan + "_performance.json", "r") as f:
         finetuneonly5e5 = json.load(f)
+        yeah_dictionary["english"]["test"][None][5e-5] = finetuneonly5e5
 
+    if False:
+        print("=====",lan,"======")
+        for k in yeah_dictionary:
+            m = yeah_dictionary[k]["test"]
+            zero = yeah_dictionary[k]["zero"]
+            print(k, "zero", [(k,round_LAS(v)) for k,v in zero.items()])
+            for lr in m:
+                learning_rate = lr
+                print(k, "metatest", lr, [(k,round_LAS(v)) for k,v in m[lr].items()])
 
-    en_zero = round(zero_results['LAS']['aligned_accuracy'], 3)
     tran_en_zero = round(tran_expen[i]/100,3)
     tran_expmix_zero = round(tran_expmix[i]/100,3)
 
-    finetune_zero = round(finetune_zero_results['LAS']['aligned_accuracy'],3)
-    meta_zero = round(meta_zero_results['LAS']['aligned_accuracy'],3)
-
-    finetune_few = round(finetune_few_results['LAS']['aligned_accuracy'],3)
-    meta_few = round(meta_few_results['LAS']['aligned_accuracy'],3)
-
-
-    lowlr_finetune = round(lowlr_finetune_results['LAS']['aligned_accuracy'],3)
-    lowlr_meta = round(lowlr_metalearn_results['LAS']['aligned_accuracy'],3)
-
-
-    meta_lowtest = round(metakid_lowmetatest['LAS']['aligned_accuracy'],3)
-    ft_lowtest = round(metakid_lowfttest['LAS']['aligned_accuracy'],3)
-
-    metatest_only = round(finetuneonly['LAS']['aligned_accuracy'],3)
-    metatest_only5e5 = round(finetuneonly5e5['LAS']['aligned_accuracy'],3)
-
-
-    meta_fewstr = ('{\\bf ' + str(meta_few) +'}') if (meta_few - finetune_few) > 0.02 and (meta_few - meta_zero) > 0.02 else meta_few
-    meta_zerostr = ('{\\bf ' + str(meta_zero) +'}') if (meta_zero - meta_few) > 0.02 and i not in train_lans else meta_zero
-
-
-
-    #\begin{tabular}{|l|r|rr|rrrr||rr|}\hline
-    #
     color = '\\rowcolor{LightCyan}' if i in train_lans else ("\\rowcolor{LightRed}" if i in low_lans else '')
     print()
     
-    print(color, lan[3:].replace('_',''), 
-        '&', en_zero, 
-        '&', finetune_zero,
-        '&', meta_zero, 
-        '&', metatest_only,
-        '&', lowlr_finetune,
-        '&', metakid_lowfttest,
-        '&', tran_en_zero,
-        '&', tran_expmix_zero,  '\\\\')
+    # These are the best results
+    lijstje = [ round_LAS(yeah_dictionary["english"]["zero"][None]),
+         round_LAS(yeah_dictionary["ne"]["zero"][1e-4]),
+         round_LAS(yeah_dictionary["meta"]["zero"][1e-4]),
+         round_LAS(yeah_dictionary["english"]["test"][None][1e-4]),
+         round_LAS(yeah_dictionary["ne"]["test"][1e-5][1e-4]),
+         round_LAS(yeah_dictionary["meta"]["test"][1e-4][1e-4]),
+         tran_en_zero,
+         tran_expmix_zero]
+    best = np.argmax(lijstje)
+    lijstje = [('{\\bf' + str(l) + '}' if i == best else str(l)) for i,l in enumerate(lijstje)]
 
+    print(color, lan[3:].replace('_','') + ' &', 
+        ' & '.join(lijstje), '\\\\'  
+    )
 
 

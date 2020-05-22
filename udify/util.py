@@ -157,9 +157,9 @@ def predict_model_with_archive(predictor: str, params: Params, archive: str,
 def predict_and_evaluate_model_with_archive(predictor: str, params: Params, archive: str, gold_file: str,
                                pred_file: str, output_file: str, segment_file: str = None, batch_size: int = 1):
     if not gold_file or not os.path.isfile(gold_file):
-        logger.warning(f"No file exists for {gold_file}")
         return
-
+    
+    #logger.warning(f"No file exists for {gold_file}")
     segment_file = segment_file if segment_file else gold_file
     predict_model_with_archive(predictor, params, archive, segment_file, pred_file, batch_size)
 
@@ -213,7 +213,7 @@ def save_metrics(evaluation: Dict[str, Any], output_file: str):
     :param output_file: the output file to save
     """
     evaluation_dict = {k: v.__dict__ for k, v in evaluation.items()}
-
+    print("IM GOING TO SAVE METRICS TO", output_file)
     with open(output_file, "w") as f:
         json.dump(evaluation_dict, f, indent=4)
 
