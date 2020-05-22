@@ -16,6 +16,7 @@ parser.add_argument("--start_from_pretrain", default=0, type=int, help="Whether 
 parser.add_argument("--model_dir", default=None, type=str, help="Directory from which to start testing if not starting from pretrain")
 parser.add_argument("--output_lr", default=None, type=float, help="Fast adaptation output learning rate")
 parser.add_argument("--updates", default=1, type=int, help="Amount of inner loop updates")
+parser.add_argument("--more_lr", default = 0, type=int, help="Update BERT less fast in outer ")
 
 args = parser.parse_args()
 
@@ -24,7 +25,12 @@ MODEL_DIR_PRETRAIN = "logs/english_expmix_deps/2020.05.17_01.08.52/"
 MODEL_DIR_FINETUNE = args.model_dir
 MODEL_DIR = MODEL_DIR_FINETUNE if args.start_from_pretrain == 0 else MODEL_DIR_PRETRAIN
 LR = args.output_lr
-WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + MODEL_DIR
+LR_SMALL = LR / 15.0
+
+UPDATES = args.updates
+MORE_LR =  args.more_lr == 1 
+WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + MODEL_DIR
+
 
 print("Saving all to directory", WHERE_TO_SAVE)
 print("Running from", MODEL_DIR, "with learning rate", LR)
@@ -45,14 +51,22 @@ for i, language in enumerate(languages):
     # Set up model and iterator and optimizer
     train_params = get_params("metatesting")
     m = Model.load(train_params, MODEL_DIR).cuda()
-    optimizer =  Adam(m.parameters(), LR)
+
+    if not MORE_LR:
+        optimizer =  Adam(m.parameters(), LR)
+    else:
+        optimizer =  Adam([{'params': m.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
+                        {'params':m.decoders.parameters(), 'lr':LR}, 
+                        {'params':m.scalar_mix.parameters(), 'lr':LR}], LR)
+                        
 
     # Do one forward pass
     support_set = next(val_iterator)[0]
-    loss = m.forward(**support_set)['loss']
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    for mini_epoch in range(UPDATES):
+        loss = m.forward(**support_set)['loss']
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
     # Save model, then zip model
     model_save_place= SERIALIZATION_DIR + "/best.th"
