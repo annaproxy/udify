@@ -33,6 +33,6 @@ echo "starting now"
 #python3 train_english_only.py
 
 #python3 predict_and_eval_all_languages_separately.py
-python3.7 metalearn_train.py --lazy
+python3.7 metalearn_train.py --meta_lr 5e-5 --inner_lr 1e-3 --updates 5 --small_test
 
 echo "doneme up"
