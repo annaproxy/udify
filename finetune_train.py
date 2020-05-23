@@ -48,7 +48,7 @@ patience = 3
 warmup_steps = args.warmup_steps
 MORE_LR =  args.more_lr == 1 
 
-MODEL_SAVE_NAME = "metalearn_" + str(LR) + "_" + str(MORE_LR)
+MODEL_SAVE_NAME = "finetune_" + str(LR) + "_" + str(MORE_LR)
 MODEL_VAL_DIR = MODEL_SAVE_NAME + "VAL"
 MODEL_FILE = "logs/english_expmix_deps/2020.05.17_01.08.52/" #'./best.th'
 VAL_WRITER = MODEL_VAL_DIR + '/val_las.txt'
@@ -59,7 +59,7 @@ if not os.path.exists(MODEL_VAL_DIR):
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/performance"])
     subprocess.run(["mkdir", MODEL_VAL_DIR + "/predictions"])
     subprocess.run(["cp", "-r", MODEL_FILE +"/vocabulary", MODEL_VAL_DIR])
-    subprocess.run(["cp", MODEL_FILE +"/config.jmodelson", MODEL_VAL_DIR])
+    subprocess.run(["cp", MODEL_FILE +"/config.json", MODEL_VAL_DIR])
 
 model = Model.load(train_params, MODEL_FILE).cuda()
 model.train()
@@ -67,9 +67,9 @@ model.train()
 if not MORE_LR:
     optimizer =  Adam(model.parameters(), LR)
 else:
-    optimizer =  Adam([{'params': model.module.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
-                    {'params':model.module.decoders.parameters(), 'lr':LR}, 
-                    {'params':model.module.scalar_mix.parameters(), 'lr':LR}], LR)
+    optimizer =  Adam([{'params': model.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
+                    {'params':model.decoders.parameters(), 'lr':LR}, 
+                    {'params':model.scalar_mix.parameters(), 'lr':LR}], LR)
                     
 losses = []; task_num_tokens_seen = np.zeros(len(training_tasks))
 

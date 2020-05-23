@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=metalearn
-#SBATCH -t 12:40:00
+#SBATCH -t 13:40:00
 #SBATCH -N 1
 #SBATCH --partition=gpu_titanrtx_shared_course
 
@@ -33,11 +33,23 @@ echo "starting now"
 #python3 train_english_only.py
 
 #python3 predict_and_eval_all_languages_separately.py
+#python3.7 finetune_train.py --lr 5e-5
+python3.7 finetune_train.py --lr 5e-5 --more_lr 1
+#python3.7 finetune_train.py --lr 1e-5  
+python3.7 finetune_train.py --lr 1e-5 --more_lr 1
+python3.7 finetune_train.py --lr 1e-4 --more_lr 1
 
-python3.7 metalearn_train.py --meta_lr 5e-5 --inner_lr 1e-4 --updates 1 --more_lr 1
-python3.7 metalearn_train.py --meta_lr 5e-5 --inner_lr 1e-4 --updates 5 --more_lr 1
-python3.7 metalearn_train.py --meta_lr 5e-5 --inner_lr 1e-3 --updates 1 --more_lr 1
-python3.7 metalearn_train.py --meta_lr 5e-5 --inner_lr 1e-3 --updates 5 --more_lr 1
-
+for f in *; do
+    #echo $f
+    if [ -d ${f} ]; then
+	if [[ $f == finetun* ]]; then  # 
+        	# Will not run if no directories are available
+        	python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir $f --more_lr 1
+        	python3.7 metatest_all.py --updates 1 --output_lr 1e-3 --model_fir $f --more_lr 1
+        	#python3.7 metatest_all.py --updates 1 --output_lr 5e-5 --model_fir $f --more_lr 1
+            
+	fi
+    fi
+done
 
 echo "doneme up"
