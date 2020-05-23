@@ -40,9 +40,9 @@ echo "starting now"
 #python3.7 finetune_train.py --lr 1e-4 --more_lr 1
 
 # Will not run if no directories are available
-python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir metalearn_5e-05_0.0001_True_1VAL
-python3.7 metatest_all.py --updates 1 --output_lr 1e-3 --model_dir metalearn_0.001_0.0001_True_1VAL
-python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir metalearn_0.001_0.0001_True_1VAL
+python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir metalearn_5e-05_0.0001_True_1VAL --more_lr 1
+python3.7 metatest_all.py --updates 1 --output_lr 1e-3 --model_dir metalearn_0.001_0.0001_True_1VAL --more_lr 1
+python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir metalearn_0.001_0.0001_True_1VAL --more_lr 1
 #python3.7 metatest_all.py --updates 5 --output_lr 1e-3 --start_from_pretrain 1 --more_lr 1
 #python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --start_from_pretrain 1 --more_lr 1
 

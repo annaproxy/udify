@@ -24,12 +24,13 @@ args = parser.parse_args()
 MODEL_DIR_PRETRAIN = "logs/english_expmix_deps/2020.05.17_01.08.52/"
 MODEL_DIR_FINETUNE = args.model_dir
 MODEL_DIR = MODEL_DIR_FINETUNE if args.start_from_pretrain == 0 else MODEL_DIR_PRETRAIN
+MODEL_NAMEDIR = (MODEL_DIR if args.start_from_pretrain==0 else 'ONLY')
 LR = args.output_lr
 LR_SMALL = LR / 15.0
 
 UPDATES = args.updates
 MORE_LR =  args.more_lr == 1 
-WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + (MODEL_DIR if args.start_from_pretrain==0 else 'ONLY') + '_averaging'
+WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + MODEL_NAMEDIR + '_averaging'
 
 
 print("Saving all to directory", WHERE_TO_SAVE)

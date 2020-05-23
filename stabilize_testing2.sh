@@ -41,9 +41,9 @@ echo "starting now"
 
 # Will not run if no directories are available
 
-python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir finetune_0.0001_TrueVAL
-python3.7 metatest_all.py --updates 1 --output_lr 1e-3 --model_dir finetune_0.0001_TrueVAL
-python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir finetune_5e-05_TrueVAL
+python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir finetune_0.0001_TrueVAL --more_lr 1
+python3.7 metatest_all.py --updates 1 --output_lr 1e-3 --model_dir finetune_0.0001_TrueVAL --more_lr 1
+python3.7 metatest_all.py --updates 1 --output_lr 1e-4 --model_dir finetune_5e-05_TrueVAL --more_lr 1
 #python3.7 metatest_all.py --updates 1 --output_lr 5e-5 --model_fir $f --more_lr 1
 
 echo "doneme up"
