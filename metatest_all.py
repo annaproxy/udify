@@ -51,7 +51,10 @@ for i, language in enumerate(languages):
 
     # Try with 5 different batches from validation set.
     for TRY in range(5):
-
+        try:
+            support_set = next(val_iterator)[0]
+        except StopIteration:
+            break 
         subprocess.run(["mkdir", SERIALIZATION_DIR])
         subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
         subprocess.run(["cp", MODEL_DIR +"/config.json", SERIALIZATION_DIR])
@@ -67,7 +70,7 @@ for i, language in enumerate(languages):
                             {'params':m.decoders.parameters(), 'lr':LR}, 
                             {'params':m.scalar_mix.parameters(), 'lr':LR}], LR)
         # Do one forward pass
-        support_set = next(val_iterator)[0]
+        
         for mini_epoch in range(UPDATES):
             loss = m.forward(**support_set)['loss']
             optimizer.zero_grad()
