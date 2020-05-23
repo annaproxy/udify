@@ -45,25 +45,27 @@ for i, language in enumerate(languages):
     # Create directory and copy relevant files there for later
     SERIALIZATION_DIR = WHERE_TO_SAVE + '/resultsvalidation' + language
 
-    subprocess.run(["mkdir", SERIALIZATION_DIR])
-    subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
-    subprocess.run(["cp", MODEL_DIR +"/config.json", SERIALIZATION_DIR])
-
-    # Set up model and iterator and optimizer
-    train_params = get_params("metatesting")
-    m = Model.load(train_params, MODEL_DIR).cuda()
-
-    if not MORE_LR:
-        optimizer =  Adam(m.parameters(), LR)
-    else:
-        optimizer =  Adam([{'params': m.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
-                        {'params':m.decoders.parameters(), 'lr':LR}, 
-                        {'params':m.scalar_mix.parameters(), 'lr':LR}], LR)
+  
                         
 
 
     # Try with 5 different batches from validation set.
     for TRY in range(5):
+
+        subprocess.run(["mkdir", SERIALIZATION_DIR])
+        subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
+        subprocess.run(["cp", MODEL_DIR +"/config.json", SERIALIZATION_DIR])
+
+        # Set up model and iterator and optimizer
+        train_params = get_params("metatesting")
+        m = Model.load(train_params, MODEL_DIR).cuda()
+
+        if not MORE_LR:
+            optimizer =  Adam(m.parameters(), LR)
+        else:
+            optimizer =  Adam([{'params': m.text_field_embedder.parameters(), 'lr':LR_SMALL}, 
+                            {'params':m.decoders.parameters(), 'lr':LR}, 
+                            {'params':m.scalar_mix.parameters(), 'lr':LR}], LR)
         # Do one forward pass
         support_set = next(val_iterator)[0]
         for mini_epoch in range(UPDATES):
