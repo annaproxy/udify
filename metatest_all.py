@@ -29,7 +29,7 @@ LR_SMALL = LR / 15.0
 
 UPDATES = args.updates
 MORE_LR =  args.more_lr == 1 
-WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + MODEL_DIR
+WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + (MODEL_DIR if args.start_from_pretrain==0 else 'ONLY') + '_averaging'
 
 
 print("Saving all to directory", WHERE_TO_SAVE)
@@ -60,31 +60,34 @@ for i, language in enumerate(languages):
                         {'params':m.scalar_mix.parameters(), 'lr':LR}], LR)
                         
 
-    # Do one forward pass
-    support_set = next(val_iterator)[0]
-    for mini_epoch in range(UPDATES):
-        loss = m.forward(**support_set)['loss']
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
 
-    # Save model, then zip model
-    model_save_place= SERIALIZATION_DIR + "/best.th"
-    torch.save(m.state_dict(), model_save_place)
-    archive_model(SERIALIZATION_DIR, files_to_archive=train_params.files_to_archive, archive_path = SERIALIZATION_DIR)
+    # Try with 5 different batches from validation set.
+    for TRY in range(5):
+        # Do one forward pass
+        support_set = next(val_iterator)[0]
+        for mini_epoch in range(UPDATES):
+            loss = m.forward(**support_set)['loss']
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-    # Get specific predictions for this finetuned guy
-    current_pred_file = os.path.join(WHERE_TO_SAVE,language +'_predictions.conllu')
-    current_output_file = os.path.join(WHERE_TO_SAVE,language+'_performance.json')
+        # Save model, then zip model
+        model_save_place= SERIALIZATION_DIR + "/best.th"
+        torch.save(m.state_dict(), model_save_place)
+        archive_model(SERIALIZATION_DIR, files_to_archive=train_params.files_to_archive, archive_path = SERIALIZATION_DIR)
 
-    util.predict_and_evaluate_model(
-        "udify_predictor",
-        get_params("metatesting"),
-        SERIALIZATION_DIR,
-        test_file,
-        current_pred_file,
-        current_output_file,
-        batch_size=16
-    )
-    print("Wrote", current_output_file, "removing", SERIALIZATION_DIR)
-    subprocess.run(["rm", "-r", "-f", SERIALIZATION_DIR])
+        # Get specific predictions for this finetuned guy
+        current_pred_file = os.path.join(WHERE_TO_SAVE,language +'_predictions' + str(TRY) +'.conllu')
+        current_output_file = os.path.join(WHERE_TO_SAVE,language+'_performance' + str(TRY) +'.json')
+
+        util.predict_and_evaluate_model(
+            "udify_predictor",
+            get_params("metatesting"),
+            SERIALIZATION_DIR,
+            test_file,
+            current_pred_file,
+            current_output_file,
+            batch_size=16
+        )
+        print("Wrote", current_output_file, "removing", SERIALIZATION_DIR)
+        subprocess.run(["rm", "-r", "-f", SERIALIZATION_DIR])
