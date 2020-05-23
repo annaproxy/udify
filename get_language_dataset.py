@@ -7,6 +7,18 @@ from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
 
+
+def get_test_set(language, language2):
+    if language == "UD_Breton-KEB": 
+        testpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test.conllu"
+    elif language == "UD_Faroese-OFT": 
+        testpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test.conllu"
+    elif language == "UD_Swedish-PUD":
+        testpath = "data/manual_process/UD_Swedish-PUD/16/fo_oft-ud-test.conllu"
+    else:
+        testpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu")
+    return testpath
+
 def get_language_dataset(language, language2, validate=False, cpu_for_some_reason=False):
     """
     A helper function that returns an Iterator[List[A]]

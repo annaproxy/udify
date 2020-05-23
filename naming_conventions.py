@@ -1,4 +1,7 @@
 
+no_train_set = ["UD_Breton-KEB", "UD_Faroese-OFT", "UD_Swedish-PUD"]
+no_train_set_lowercase = [ "br_keb-ud","fo_oft-ud","sv_pud-ud"]
+
 languages = [
     "UD_Arabic-PADT",
     "UD_Armenian-ArmTDP",
@@ -56,3 +59,7 @@ languages_lowercase = [
     "ur_udtb-ud",
     "vi_vtb-ud",
 ]
+
+final_languages = languages[-6:]
+final_languages_lowercase = languages_lowercase[-6:]
+

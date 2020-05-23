@@ -7,8 +7,8 @@ import torch
 import subprocess
 from udify import util
 import os 
-from naming_conventions import languages, languages_lowercase
-from get_language_dataset import get_language_dataset
+from naming_conventions import languages, languages_lowercase, final_languages, final_languages_lowercase, no_train_set, no_train_set_lowercase
+from get_language_dataset import get_language_dataset, get_test_set
 import argparse 
 
 parser = argparse.ArgumentParser()
@@ -17,7 +17,7 @@ parser.add_argument("--model_dir", default=None, type=str, help="Directory from 
 parser.add_argument("--output_lr", default=None, type=float, help="Fast adaptation output learning rate")
 parser.add_argument("--updates", default=1, type=int, help="Amount of inner loop updates")
 parser.add_argument("--more_lr", default = 0, type=int, help="Update BERT less fast in outer ")
-
+parser.add_argument("--which", default="all", type=str, help="Whether to evaluate only swedish and after. [all|swedish|nontrain]")
 args = parser.parse_args()
 
 # The model on which to Meta_test
@@ -31,24 +31,27 @@ LR_SMALL = LR / 15.0
 UPDATES = args.updates
 MORE_LR =  args.more_lr == 1 
 WHERE_TO_SAVE = "metatesting_" + str(LR) + "_" + str(MORE_LR) + str(UPDATES) + '_' + MODEL_NAMEDIR + '_averaging'
-
+if args.which == "all":
+    the_languages = languages 
+    the_languages_lowercase = languages_lowercase
+elif args.which == "notrain":
+    the_languages = no_train_set
+    the_languages_lowercase = no_train_set_lowercase
+else:
+    the_languages = final_languages
+    the_languages_lowercase = final_languages_lowercase
 
 print("Saving all to directory", WHERE_TO_SAVE)
 print("Running from", MODEL_DIR, "with learning rate", LR)
 subprocess.run(["mkdir", WHERE_TO_SAVE])
 
 # The language on which to evaluate 
-for i, language in enumerate(languages):
-    test_file = "data/expmix/" + language + "/" + languages_lowercase[i] + "-test.conllu"
-    val_iterator = get_language_dataset(language, languages_lowercase[i], validate=True)
+for i, language in enumerate(the_languages):
+    test_file = get_test_set(language, the_languages_lowercase[i])
+    val_iterator = get_language_dataset(language, the_languages_lowercase[i], validate=True)
 
     # Create directory and copy relevant files there for later
     SERIALIZATION_DIR = WHERE_TO_SAVE + '/resultsvalidation' + language
-
-  
-                        
-
-
     # Try with 5 different batches from validation set.
     for TRY in range(5):
         try:
