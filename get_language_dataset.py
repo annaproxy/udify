@@ -15,6 +15,8 @@ def get_language_dataset(language, language2, validate=False, cpu_for_some_reaso
         language2: the lowercased variant, ie. ru_taiga-ud or pt_gsd-ud
         Why are these files named this way? I do not know, one of the mysteries of udify
     """
+
+    
     #parser = argparse.ArgumentParser()
     #parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
     #parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
@@ -43,12 +45,19 @@ def get_language_dataset(language, language2, validate=False, cpu_for_some_reaso
     valpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-dev.conllu")
     testpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu")
 
+    if language == "UD_Breton-KEB": 
+        trainpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test-16.conllu"
+        testpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test.conllu"
+    if language == "UD_Faroese-OFT": 
+        trainpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test-16.conllu"
+        testpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test.conllu"
+
     configs.append(Params(overrides))
     configs.append(Params({
         "train_data_path": 
-            trainpath if os.path.exists(valpath) else testpath,
+            trainpath,
         "validation_data_path": 
-            valpath if os.path.exists(valpath) else (trainpath if os.path.exists(trainpath) else testpath),
+            valpath if os.path.exists(valpath) else trainpath,
         "test_data_path": 
             testpath,
         "vocabulary": {

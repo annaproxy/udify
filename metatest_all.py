@@ -54,6 +54,7 @@ for i, language in enumerate(languages):
         try:
             support_set = next(val_iterator)[0]
         except StopIteration:
+            print("Stopping because val set too small")
             break 
         subprocess.run(["mkdir", SERIALIZATION_DIR])
         subprocess.run(["cp", "-r", MODEL_DIR +"/vocabulary", SERIALIZATION_DIR])
