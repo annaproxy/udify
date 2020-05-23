@@ -51,6 +51,9 @@ def get_language_dataset(language, language2, validate=False, cpu_for_some_reaso
     if language == "UD_Faroese-OFT": 
         trainpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test-16.conllu"
         testpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test.conllu"
+    if language == "UD_Swedish-PUD":
+        trainpath = "data/manual_process/UD_Swedish-PUD/16/fo_oft-ud-test-16.conllu"
+        testpath = "data/manual_process/UD_Swedish-PUD/16/fo_oft-ud-test.conllu"
 
     configs.append(Params(overrides))
     configs.append(Params({
