@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=metalearn
+#SBATCH --job-name=finetunetest
 #SBATCH -t 13:40:00
 #SBATCH -N 1
 #SBATCH --partition=gpu_titanrtx_shared_course
