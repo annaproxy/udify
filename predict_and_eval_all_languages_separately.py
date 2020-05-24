@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
 logger = logging.getLogger(__name__)
 
 MODEL_DIR = "finetunelowlr160"
-hyper_string = 'finetunelowlr_real'
+hyper_string = 'metalearn_0.001_0.0001'
 
 all_files = list()
 
@@ -29,7 +29,7 @@ for test_file in all_files:
 
     util.predict_and_evaluate_model(
         "udify_predictor",
-        get_params(),
+        get_params("zeroshottesting"),
         MODEL_DIR, 
         current_gold_file,
         current_pred_file,
