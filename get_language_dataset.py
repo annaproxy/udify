@@ -6,7 +6,8 @@ from allennlp.common.params import Params
 from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
-
+with open("correct.txt", "w") as f:
+    f.write("I IMPORTED OCRREDT GUY!")
 
 def get_test_set(language, language2):
     if language == "UD_Breton-KEB": 
@@ -79,7 +80,13 @@ def get_language_dataset(language, language2, validate=False, cpu_for_some_reaso
             "directory_path": os.path.join("data/vocab/english_only_expmix4/vocabulary")
         }
     }))
-    configs.append(Params.from_file("./config/ud/en/udify_bert_finetune_en_ewt.json"))
+
+    # 24 at training time, 32 at testing time
+    which = "./config/ud/en/udify_bert_finetune_en_ewt.json"
+    if validate:
+        which = "./config/ud/en/udify_bert_finetune_en_ewt_32.json"
+
+    configs.append(Params.from_file(which))
     configs.append(Params.from_file(the_params['base_config']))
    
     params = util.merge_configs(configs)
