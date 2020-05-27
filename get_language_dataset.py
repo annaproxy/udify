@@ -11,11 +11,11 @@ with open("correct.txt", "w") as f:
 
 def get_test_set(language, language2):
     if language == "UD_Breton-KEB": 
-        testpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test.conllu"
+        testpath = "data/manual_process/UD_Breton-KEB/32/br_keb-ud-test.conllu"
     elif language == "UD_Faroese-OFT": 
-        testpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test.conllu"
+        testpath = "data/manual_process/UD_Faroese-OFT/32/fo_oft-ud-test.conllu"
     elif language == "UD_Swedish-PUD":
-        testpath = "data/manual_process/UD_Swedish-PUD/16/fo_oft-ud-test.conllu"
+        testpath = "data/manual_process/UD_Swedish-PUD/32/sv_pud-ud-test.conllu"
     else:
         testpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu")
     return testpath
@@ -59,14 +59,14 @@ def get_language_dataset(language, language2, validate=False, cpu_for_some_reaso
     testpath = os.path.join("data/ud-treebanks-v2.3",  language , language2 + "-test.conllu")
 
     if language == "UD_Breton-KEB": 
-        trainpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test-16.conllu"
-        testpath = "data/manual_process/UD_Breton-KEB/16/br_keb-ud-test.conllu"
+        trainpath = "data/manual_process/UD_Breton-KEB/32/br_keb-ud-test-32.conllu"
+        testpath = "data/manual_process/UD_Breton-KEB/32/br_keb-ud-test.conllu"
     if language == "UD_Faroese-OFT": 
-        trainpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test-16.conllu"
-        testpath = "data/manual_process/UD_Faroese-OFT/16/fo_oft-ud-test.conllu"
+        trainpath = "data/manual_process/UD_Faroese-OFT/32/fo_oft-ud-test-32.conllu"
+        testpath = "data/manual_process/UD_Faroese-OFT/32/fo_oft-ud-test.conllu"
     if language == "UD_Swedish-PUD":
-        trainpath = "data/manual_process/UD_Swedish-PUD/16/sv_pud-ud-test-16.conllu"
-        testpath = "data/manual_process/UD_Swedish-PUD/16/sv_pud-ud-test.conllu"
+        trainpath = "data/manual_process/UD_Swedish-PUD/32/sv_pud-ud-test-32.conllu"
+        testpath = "data/manual_process/UD_Swedish-PUD/32/sv_pud-ud-test.conllu"
 
     configs.append(Params(overrides))
     configs.append(Params({
