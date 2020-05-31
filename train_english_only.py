@@ -22,17 +22,16 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s
 logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--name", default="english_only", type=str, help="Log dir name")
+parser.add_argument("--name", default="english_expmix_deps", type=str, help="Log dir name")
 parser.add_argument("--base_config", default="config/udify_base.json", type=str, help="Base configuration file")
 parser.add_argument("--config", default="config/ud/en/udify_bert_finetune_en_ewt.json", type=str, nargs="+", help="Overriding configuration files")
 parser.add_argument("--device", default=None, type=int, help="CUDA device; set to -1 for CPU")
 parser.add_argument("--resume", type=str, help="Resume training with the given model")
 parser.add_argument("--lazy", default=None, action="store_true", help="Lazy load the dataset")
 parser.add_argument("--cleanup_archive", action="store_true", help="Delete the model archive")
-parser.add_argument("--replace_vocab", action="store_true", help="Create a new vocab and replace the cached one")
+#parser.add_argument("--replace_vocab", action="store_true", help="Create a new vocab and replace the cached one")
 parser.add_argument("--archive_bert", action="store_true", help="Archives the finetuned BERT model after training")
 parser.add_argument("--predictor", default="udify_predictor", type=str, help="The type of predictor to use")
-
 args = parser.parse_args()
 
 log_dir_name = args.name
@@ -51,7 +50,7 @@ if not args.resume:
     if args.lazy is not None:
         overrides["dataset_reader"] = {"lazy": args.lazy}
     configs.append(Params(overrides))
-    #for config_file in args.config:
+    #configs.append(Params({'config':}))
     configs.append(Params.from_file(args.config))
     configs.append(Params.from_file(args.base_config))
 else:
@@ -65,6 +64,16 @@ if "vocabulary" in train_params:
     # Remove this key to make AllenNLP happy
     train_params["vocabulary"].pop("non_padded_namespaces", None)
 
+import_submodules("udify")
+
+
+try: 
+    # Vocabulary should be there already!
+    #util.cache_vocab(train_params)
+    train_model(train_params, serialization_dir, recover=bool(args.resume))
+except KeyboardInterrupt:
+    logger.warning("KeyboardInterrupt, skipping training")
+    
 """
 m = Model.load(train_params, "./pretrained",)
 print(m)
@@ -82,28 +91,28 @@ try:
 except KeyboardInterrupt:
     logger.warning("KeyboardInterrupt, skipping training")
 """
-print("Setting test files")
+#print("Setting test files")
 #dev_file = predict_params["validation_data_path"]
 #test_file = predict_params["test_data_path"]
-test_file = "data/ud/multilingual/test.conllu"
-test_pred = "testpred.conllu"
-test_eval = "testEVAL.json"
+#test_file = "data/ud/multilingual/test.conllu"
+#test_pred = "testpred.conllu"
+#test_eval = "testEVAL.json"
 #dev_pred, dev_eval, test_pred, test_eval = [
 #    os.path.join(serialization_dir, name)n_ewt-ud-t
 #    for name in ["dev.conllu", "dev_results.json", "test.conllu", "test_results.json"]
 #]
-serialization_dir = "./pretrained"
+#serialization_dir = "./pretrained"
 
 #if dev_file != test_file:
 #    util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, dev_file, dev_pred, dev_eval)
 
-util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, test_file, test_pred, test_eval)
-print("Predictions done")
+#util.predict_and_evaluate_model(args.predictor, predict_params, serialization_dir, test_file, test_pred, test_eval)
+#print("Predictions done")
 
-"""
+
 if args.archive_bert:
     bert_config = "config/archive/bert-base-multilingual-cased/bert_config.json"
     util.archive_bert_model(serialization_dir, bert_config)
 
 util.cleanup_training(serialization_dir, keep_archive=not args.cleanup_archive)
-"""
+
