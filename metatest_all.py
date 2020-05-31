@@ -1,3 +1,7 @@
+"""
+Meta-tests on ALL languages.
+Uses allennlp predict wrapper, which requires a .tar.gz file, which are now created for every language: takes long!
+"""
 from allennlp.models.archival import archive_model
 from get_language_dataset import get_language_dataset
 from params_all_in_one_file import get_params

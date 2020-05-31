@@ -1,3 +1,6 @@
+"""
+Computes correlations, similarities, all related to URIEL.
+"""
 import lang2vec.lang2vec as l2v
 from scipy import spatial
 from collections import defaultdict

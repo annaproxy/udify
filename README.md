@@ -24,3 +24,12 @@ We have two ways of evaluating:
 
 ## Analysis
 All analysis is done using `uriel.py`, `regressor.py` and of course `analysis.py`. 
+
+
+# Requirements, Running
+Attempting to run this will be a difficult process. For instance, itt will probably not work on Windows machines due to forward slashes in filenames.
+
+However, any and all problems you run into can be solved by Anna (`annaproxy@protonmail.com`).
+
+
+
