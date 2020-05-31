@@ -1,4 +1,4 @@
-
+from collections import defaultdict
 no_train_set = ["UD_Breton-KEB", "UD_Faroese-OFT", "UD_Swedish-PUD"]
 no_train_set_lowercase = [ "br_keb-ud","fo_oft-ud","sv_pud-ud"]
 
@@ -29,6 +29,35 @@ languages = [
     "UD_Upper_Sorbian-UFAL",
     "UD_Urdu-UDTB",
     'UD_Vietnamese-VTB'
+]
+
+languages_readable = [
+    "Arabic",
+    "Armenian",
+    "Breton",
+    "Bulgarian",
+    "Buryat",
+    "Czech",
+    "English",
+    "Faroese",
+    "Finnish",
+    "French",
+    "German",
+    "Hindi",
+    "Hungarian",
+    "Italian",
+    "Japanese",
+    "Kazakh",
+    "Korean",
+    "Norwegian",
+    "Persian",
+    "Russian",
+    "Swedish",
+    "Tamil",
+    "Telugu",
+    "UpperSorbian",
+    "Urdu",
+    'Vietnamese'
 ]
 
 languages_lowercase = [
@@ -63,3 +92,13 @@ languages_lowercase = [
 final_languages = languages[-6:]
 final_languages_lowercase = languages_lowercase[-6:]
 
+limits = defaultdict(lambda:5)
+limits2 = {
+    "UD_Breton-KEB":2,
+    "UD_Buryat-BDT":1,
+    "UD_Faroese-OFT":3,
+    "UD_Kazakh-KTB":1,
+    "UD_Swedish-PUD":3,
+    "UD_Upper_Sorbian-UFAL":1
+}
+limits.update(limits2)

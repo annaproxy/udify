@@ -6,8 +6,8 @@ from allennlp.common.params import Params
 from allennlp.common.util import lazy_groups_of
 from allennlp.training.trainer_pieces import TrainerPieces
 from udify import util
-with open("correct.txt", "w") as f:
-    f.write("I IMPORTED OCRREDT GUY!")
+#with open("correct.txt", "w") as f:
+#    f.write("I IMPORTED OCRREDT GUY!")
 
 def get_test_set(language, language2):
     if language == "UD_Breton-KEB": 
