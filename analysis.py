@@ -502,8 +502,8 @@ meta = MetaListAnalysis(
     [english,maml,ne, xmaml, zeroen, zeromaml, zerone, zerox, "tran-en", "tran-mix"], 
     ["english","maml","x-ne","x-maml","zero-eng", "zero-maml", "zero-x-ne", "zero-x-maml", "tran-en", "tran-mix"])
 
-
-#meta.print_latex("test_lans.tex", print_sd=True)
+"""Latex"""
+#meta.print_latex("all_lans.tex", print_sd=True)
 #meta.print_latex("train_lans.tex", True, print_sd=True)
 #meta.print_latex("test_lans_small.tex",)
 #meta.print_latex("train_lans_small.tex", True,)

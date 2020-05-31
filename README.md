@@ -26,10 +26,6 @@ We have two ways of evaluating:
 All analysis is done using `uriel.py`, `regressor.py` and of course `analysis.py`. 
 
 
-# Requirements, Running
-Attempting to run this will be a difficult process. For instance, itt will probably not work on Windows machines due to forward slashes in filenames.
-
-However, any and all problems you run into can be solved by Anna (`annaproxy@protonmail.com`).
-
-
+# Running our code
+Attempting to run this *will* be a difficult process. For instance, it will probably not work on Windows machines due to forward slashes in filenames. This is the least of your concerns if you plan to tame the UDify+Outdated AllenNLP beast. However, any and all problems you run into/questions you have can probably be solved by Anna (`annaproxy@protonmail.com`).
 
