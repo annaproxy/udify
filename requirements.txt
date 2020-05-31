@@ -2,3 +2,4 @@ allennlp==0.9
 tensorflow
 pandas
 jupyter
+learn2learn

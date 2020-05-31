@@ -1,6 +1,10 @@
+"""
+Meta-tests on ALL languages.
+Uses allennlp predict wrapper, which requires a .tar.gz file, which are now created for every language: takes long!
+"""
 from allennlp.models.archival import archive_model
 from get_language_dataset import get_language_dataset
-from i_hate_params_i_want_them_all_in_one_file import get_params
+from params_all_in_one_file import get_params
 from allennlp.models.model import Model
 from torch.optim import Adam
 import torch

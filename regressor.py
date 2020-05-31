@@ -1,5 +1,10 @@
+"""
+Fits a simple linear model to the data.
+Prints all kinds of correlations and plots.
+"""
+
 from sklearn.model_selection import LeaveOneOut
-from sklearn.linear_model import Ridge, Lasso
+from sklearn.linear_model import Ridge, Lasso, LinearRegression
 import numpy as np 
 from naming_conventions import languages_readable, languages 
 from collections import defaultdict 
@@ -49,7 +54,7 @@ def get_thick_X():
     enum = 0
     test_lans = list()
 
-    with open("thickboys.txt", "r") as f:
+    with open("fullvectors.txt", "r") as f:
         for line in f:
             xs = line.strip().split(',')
             test_lan = xs[0]
