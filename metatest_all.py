@@ -1,6 +1,6 @@
 from allennlp.models.archival import archive_model
 from get_language_dataset import get_language_dataset
-from i_hate_params_i_want_them_all_in_one_file import get_params
+from params_all_in_one_file import get_params
 from allennlp.models.model import Model
 from torch.optim import Adam
 import torch

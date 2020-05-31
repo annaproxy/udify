@@ -1,7 +1,7 @@
 from udify import util 
 import logging 
 from allennlp.common import Params
-from i_hate_params_i_want_them_all_in_one_file import get_params 
+from params_all_in_one_file import get_params 
 import subprocess 
 import os 
 from udify.dataset_readers.conll18_ud_eval import evaluate, load_conllu_file, UDError
